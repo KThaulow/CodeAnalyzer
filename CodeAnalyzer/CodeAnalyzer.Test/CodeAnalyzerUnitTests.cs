@@ -69,7 +69,8 @@ namespace CodeAnalyzer.Test
             VerifyCSharpFix(test, fixtest);
         }
 
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
+
+		protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new CodeAnalyzerCodeFixProvider();
         }
