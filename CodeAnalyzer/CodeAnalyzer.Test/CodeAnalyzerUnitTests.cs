@@ -64,7 +64,7 @@ namespace CodeAnalyzer.Test
     {
         class TYPENAME
         {   
-        }
+        }	
     }";
             VerifyCSharpFix(test, fixtest);
         }

@@ -16,25 +16,18 @@ namespace CodeAnalyzer.Test
 		public void ConstantAnalyzer_CouldMakeConstant_ProposeFix()
 		{
 			var test = @"
-			using System;
-			using System.Collections.Generic;
-			using System.Linq;
-			using System.Text;
-			using System.Threading.Tasks;
-			using System.Diagnostics;
-
-			namespace ConsoleApplication1
-			{
-				class TypeName
-				{   
-					static void Main(string[] args)
-					{
-						int i = 1;
-						int j = 2;
-						int k = i + j;
-					}
-				}
-			}";
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 1;
+			int j = 2;
+			int k = i + j;
+		}
+	}
+}";
 
 			var expected1 = new DiagnosticResult
 			{
@@ -43,7 +36,7 @@ namespace CodeAnalyzer.Test
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {
-							new DiagnosticResultLocation("Test0.cs", 15,7)
+							new DiagnosticResultLocation("Test0.cs", 8,4)
 						}
 			};
 
@@ -54,32 +47,25 @@ namespace CodeAnalyzer.Test
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 				new[] {
-							new DiagnosticResultLocation("Test0.cs", 16,7)
+							new DiagnosticResultLocation("Test0.cs", 9,4)
 						}
 			};
 
 			VerifyCSharpDiagnostic(test, expected1, expected2);
 
 			var fixtest = @"
-			using System;
-			using System.Collections.Generic;
-			using System.Linq;
-			using System.Text;
-			using System.Threading.Tasks;
-			using System.Diagnostics;
-
-			namespace ConsoleApplication1
-			{
-				class TypeName
-				{   
-					static void Main(string[] args)
-					{
-						const int i = 1;
-						const int j = 2;
-						int k = i + j;
-					}
-				}
-			}";
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+            const int i = 1;
+            const int j = 2;
+            int k = i + j;
+		}
+	}
+}";
 
 			VerifyCSharpFix(test, fixtest, null, true);
 		}
