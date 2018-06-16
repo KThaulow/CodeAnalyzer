@@ -17,6 +17,7 @@ namespace CodeAnalyzer
 		private const string Description = "Make UTC";
 		private const string Category = "Usage";
 
+		private const string SYSTEM_DATETIME = "System.DateTime";
 		private const string DATETIME = "DateTime";
 		private const string NOW = "Now";
 		private const string DATETIMEKIND = "DateTimeKind";
@@ -28,12 +29,24 @@ namespace CodeAnalyzer
 
 		public override void Initialize(AnalysisContext context)
 		{
-			context.RegisterSyntaxNodeAction(AnalyzeDateTimeLocalDeclarationStatement, SyntaxKind.LocalDeclarationStatement);
-			context.RegisterSyntaxNodeAction(AnalyzeDateTimeArgument, SyntaxKind.Argument);
-			context.RegisterSyntaxNodeAction(AnalyzeDateTimeObjectCreation, SyntaxKind.ObjectCreationExpression);
+			context.RegisterSyntaxNodeAction(AnalyzeLocalDeclarationStatement, SyntaxKind.LocalDeclarationStatement);
+
+			context.RegisterSyntaxNodeAction(AnalyzeArgument, SyntaxKind.Argument);
+
+			context.RegisterCompilationStartAction(startContext =>
+			{
+				INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName(SYSTEM_DATETIME);
+
+				if (dateTimeSymbol != null)
+				{
+					startContext.RegisterSyntaxNodeAction(
+						nodeContext => AnalyzeObjectCreationExpression(nodeContext, dateTimeSymbol),
+						SyntaxKind.ObjectCreationExpression);
+				}
+			});
 		}
 
-		private static void AnalyzeDateTimeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
+		private static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
 		{
 			var localDeclaration = (LocalDeclarationStatementSyntax)context.Node;
 
@@ -50,24 +63,19 @@ namespace CodeAnalyzer
 		}
 
 
-		private static void AnalyzeDateTimeArgument(SyntaxNodeAnalysisContext context)
+		private static void AnalyzeArgument(SyntaxNodeAnalysisContext context)
 		{
 			var argumentSyntax = (ArgumentSyntax)context.Node;
 			AnalyzeExpressionSyntax(context, argumentSyntax.Expression);
 		}
 
-
-		private static void AnalyzeDateTimeObjectCreation(SyntaxNodeAnalysisContext context)
+		private static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol dateTimeSymbol)
 		{
 			var objectCreationSyntax = (ObjectCreationExpressionSyntax)context.Node;
 
-			if (objectCreationSyntax.Type is IdentifierNameSyntax identifierNameSyntax)
+			ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreationSyntax, context.CancellationToken);
+			if (typeSymbol?.Equals(dateTimeSymbol) == true)
 			{
-				if (identifierNameSyntax.Identifier.ValueText != DATETIME)
-				{
-					return;
-				}
-
 				var dateTimeKindArgument = objectCreationSyntax.ArgumentList.Arguments.FirstOrDefault(e =>
 											(e is ArgumentSyntax argumentSyntax)
 											&& (argumentSyntax.Expression is MemberAccessExpressionSyntax memberSyntax)

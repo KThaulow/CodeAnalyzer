@@ -58,6 +58,7 @@ namespace ConsoleApplication1
 		public void DateTimeAnalyzer_InitializeDateTimeLocal_ProposeFix()
 		{
 			var test = @"
+using System;
 namespace ConsoleApplication1
 {
 	class TypeName
@@ -76,7 +77,7 @@ namespace ConsoleApplication1
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {
-							new DiagnosticResultLocation("Test0.cs", 8,24)
+							new DiagnosticResultLocation("Test0.cs", 9,24)
 						}
 			};
 
