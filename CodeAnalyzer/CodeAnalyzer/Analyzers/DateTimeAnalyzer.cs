@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace CodeAnalyzer
+namespace CodeAnalyzer.Analyzers
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class DateTimeAnalyzer : DiagnosticAnalyzer

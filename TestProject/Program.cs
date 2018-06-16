@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace TestProject
 {
@@ -15,6 +16,8 @@ namespace TestProject
 			var dateTime2 = new DateTime(0, 0, 0, 0, 0, 0, DateTimeKind.Local);
 
 			MyMethod(DateTime.Now);
+
+			double parsedDouble = double.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
 		}
 
 
