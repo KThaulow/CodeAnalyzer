@@ -29,23 +29,24 @@ namespace CodeAnalyzer.Analyzers
 				if (doubleSymbol != null)
 				{
 					startContext.RegisterSyntaxNodeAction(
-						nodeContext => AnalyzeObjectCreationExpression(nodeContext, doubleSymbol),
+						nodeContext => AnalyzeInvocationExpressionSyntax(nodeContext, doubleSymbol),
 						SyntaxKind.InvocationExpression);
 				}
 			});
 		}
 
-		private static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol doubleSymbol)
+		private static void AnalyzeInvocationExpressionSyntax(SyntaxNodeAnalysisContext context, INamedTypeSymbol doubleSymbol)
 		{
 			var invocationExpressionSyntax = (InvocationExpressionSyntax)context.Node;
 
-			ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(invocationExpressionSyntax, context.CancellationToken);
+			ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
 
-			if (typeSymbol?.Equals(doubleSymbol) == true)
+			INamedTypeSymbol containingType = symbol.ContainingType;
+
+			if (containingType?.Equals(doubleSymbol) == true)
 			{
-				ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
-
-				if (symbol.Kind == SymbolKind.Method && symbol.Name == "Parse")
+				if (symbol.Kind == SymbolKind.Method
+					&& (symbol.Name == "Parse" || symbol.Name == "TryParse"))
 				{
 					SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
 

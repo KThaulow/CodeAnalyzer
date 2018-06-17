@@ -18,6 +18,12 @@ namespace TestProject
 			MyMethod(DateTime.Now);
 
 			double parsedDouble = double.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
+
+			double parsedDouble2 = double.Parse("1.1");
+
+			bool didParse = double.TryParse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedDouble3);
+
+			bool didParse2 = double.TryParse("1.1", out double parsedDouble4);
 		}
 
 
