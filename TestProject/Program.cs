@@ -24,6 +24,14 @@ namespace TestProject
 			bool didParse = double.TryParse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedDouble3);
 
 			bool didParse2 = double.TryParse("1.1", out double parsedDouble4);
+
+			int i = 0;
+			while (i < 10)
+			{
+				i--;
+				i++;
+				return;
+			}
 		}
 
 
