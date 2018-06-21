@@ -22,13 +22,33 @@ namespace CodeAnalyzer.Analyzers
 		public override void Initialize(AnalysisContext context)
 		{
 			context.RegisterSyntaxNodeAction(AnalyzeWhileStatement, SyntaxKind.WhileStatement);
+			context.RegisterSyntaxNodeAction(AnalyzeForStatement, SyntaxKind.ForStatement);
 		}
 
 		private static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
 		{
 			var whileStatement = (WhileStatementSyntax)context.Node;
+			CheckStatement(context, whileStatement.Statement);
+		}
 
-			if (whileStatement.Statement is BlockSyntax blockSyntax)
+		private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
+		{
+			var forStatement = (ForStatementSyntax)context.Node;
+
+			if (forStatement.Incrementors.Count == 0
+				&& forStatement.Initializers.Count == 0
+				&& !forStatement.OpenParenToken.ContainsDirectives
+				&& !forStatement.FirstSemicolonToken.ContainsDirectives
+				&& !forStatement.SecondSemicolonToken.ContainsDirectives
+				&& !forStatement.CloseParenToken.ContainsDirectives)
+			{
+				CheckStatement(context, forStatement.Statement);
+			}
+		}
+
+		private static void CheckStatement(SyntaxNodeAnalysisContext context, StatementSyntax statementSyntax)
+		{
+			if (statementSyntax is BlockSyntax blockSyntax)
 			{
 				foreach (var statement in blockSyntax.Statements)
 				{
