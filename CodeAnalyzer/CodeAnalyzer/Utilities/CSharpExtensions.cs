@@ -25,5 +25,15 @@ namespace CodeAnalyzer
 				.GetSymbolInfo(semanticModel, expression, cancellationToken)
 				.Symbol;
 		}
+
+		public static ISymbol GetSymbol(
+			this SemanticModel semanticModel,
+			AttributeSyntax attribute,
+			CancellationToken cancellationToken = default(CancellationToken))
+		{
+			return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+				.GetSymbolInfo(semanticModel, attribute, cancellationToken)
+				.Symbol;
+		}
 	}
 }
