@@ -25,7 +25,7 @@ namespace CodeAnalyzer.Analyzers
 
 		public override void Initialize(AnalysisContext context)
 		{
-			context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration, SyntaxKind.PublicKeyword, SyntaxKind.AttributeTargetSpecifier);
+			context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration);
 		}
 
 		private static void AnalyzeTestMethodName(SyntaxNodeAnalysisContext context)
