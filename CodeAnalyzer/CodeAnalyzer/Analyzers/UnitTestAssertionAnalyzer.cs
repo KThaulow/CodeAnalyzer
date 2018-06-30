@@ -16,6 +16,7 @@ namespace CodeAnalyzer.Analyzers
 		private const string MessageFormat = "Unit test should contain an assertion";
 		private const string Description = "Unit test should contain an assertion";
 		private const string Category = "Usage";
+		private const int MAX_RECURSIVE_CALLS = 5;
 
 		private static List<string> s_AssertTokens = new List<string>()
 		{
@@ -40,7 +41,9 @@ namespace CodeAnalyzer.Analyzers
 			if (methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
 				&& attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
 			{
-				if (IsAssertionMethod(methodDeclarationSyntax, context))
+				int resursiveCallCounter = 0;
+
+				if (IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
 				{
 					return;
 				}
@@ -49,11 +52,17 @@ namespace CodeAnalyzer.Analyzers
 			}
 		}
 
-		private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context)
+		private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
 		{
+			if (resursiveCallCounter > MAX_RECURSIVE_CALLS)
+			{
+				return true; // If the search have treversed more than 5 levels in a method, ignore this method
+			}
+
+			resursiveCallCounter++;
 			foreach (var statement in methodDeclarationSyntax.Body.Statements)
 			{
-				if (IsAssertionStatement(statement, context))
+				if (IsAssertionStatement(statement, context, resursiveCallCounter))
 				{
 					return true;
 				}
@@ -62,7 +71,7 @@ namespace CodeAnalyzer.Analyzers
 			return false;
 		}
 
-		private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context)
+		private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
 		{
 			if (statement is ExpressionStatementSyntax expressionStatementSyntax)
 			{
@@ -85,7 +94,7 @@ namespace CodeAnalyzer.Analyzers
 						var declaration = syntaxReference.GetSyntax(context.CancellationToken);
 						if (declaration is MethodDeclarationSyntax methodDeclarationSyntax
 							&& methodDeclarationSyntax.Modifiers.Any(e => e.Kind() == SyntaxKind.PrivateKeyword)
-							&& IsAssertionMethod(methodDeclarationSyntax, context))
+							&& IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
 						{
 							return true;
 						}

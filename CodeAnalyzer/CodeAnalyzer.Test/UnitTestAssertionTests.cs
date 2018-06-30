@@ -91,6 +91,31 @@ namespace ConsoleApplication1
 			VerifyCSharpDiagnostic(test);
 		}
 
+		[TestMethod]
+		public void UnitTestAssertionAnalyzer_ResursiveMethod_Ignore()
+		{
+			var test = @"
+namespace ConsoleApplication1
+{
+	[TestClass]
+	public class TestClass
+	{
+		[TestMethod]
+		public void TestMethodName()
+		{
+			TestResult(1);
+		}
+		
+		private void TestResult(int k)
+		{
+			TestResult(k);
+		}
+	}
+}";
+
+			VerifyCSharpDiagnostic(test);
+		}
+
 
 		protected override CodeFixProvider GetCSharpCodeFixProvider()
 		{
