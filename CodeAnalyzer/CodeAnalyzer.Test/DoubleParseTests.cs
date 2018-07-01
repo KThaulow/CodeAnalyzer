@@ -59,22 +59,6 @@ namespace ConsoleApplication1
 			};
 
 			VerifyCSharpDiagnostic(test, expected);
-
-			var fixtest = @"
-using System;
-using System.Globalization;
-namespace ConsoleApplication1
-{
-	class TypeName
-	{   
-		static void Main(string[] args)
-		{
-			double parsedDouble = double.Parse(""1.1"", NumberStyles.Any, CultureInfo.InvariantCulture);
-		}
-	}
-}";
-
-			//VerifyCSharpFix(test, fixtest, null, true);
 		}
 
 		[TestMethod]
@@ -125,22 +109,6 @@ namespace ConsoleApplication1
 			};
 
 			VerifyCSharpDiagnostic(test, expected);
-
-			var fixtest = @"
-using System;
-using System.Globalization;
-namespace ConsoleApplication1
-{
-	class TypeName
-	{   
-		static void Main(string[] args)
-		{
-			double parsedDouble = double.Parse(""1.1"", NumberStyles.Any, CultureInfo.InvariantCulture);
-		}
-	}
-}";
-
-			//VerifyCSharpFix(test, fixtest, null, true);
 		}
 
 		protected override CodeFixProvider GetCSharpCodeFixProvider()

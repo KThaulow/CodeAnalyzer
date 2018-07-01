@@ -39,20 +39,6 @@ namespace ConsoleApplication1
 			};
 
 			VerifyCSharpDiagnostic(test, expected);
-
-			var fixtest = @"
-namespace ConsoleApplication1
-{
-	class TypeName
-	{   
-		static void Main(string[] args)
-		{
-			DateTime date = DateTime.UtcNow;
-		}
-	}
-}";
-
-			//VerifyCSharpFix(test, fixtest, null, true);
 		}
 
 		[TestMethod]
@@ -83,32 +69,7 @@ namespace ConsoleApplication1
 			};
 
 			VerifyCSharpDiagnostic(test, expected);
-
-			var fixtest = @"
-namespace ConsoleApplication1
-{
-	class TypeName
-	{   
-		static void Main(string[] args)
-		{
-			DateTime dateTime = new DateTime(0, 0, 0, 0, 0, 0, DateTimeKind.Utc);
 		}
-	}
-}";
-
-			//VerifyCSharpFix(test, fixtest, null, true);
-		}
-
-		protected override CodeFixProvider GetCSharpCodeFixProvider()
-		{
-			return new ConstantFixProvider();
-		}
-
-		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
-		{
-			return new DateTimeAnalyzer();
-		}
-
 
 		[TestMethod]
 		public void DateTimeAnalyzer_DateTimeNowMethodParameter_ProposeFix()
@@ -142,5 +103,17 @@ namespace ConsoleApplication1
 
 			VerifyCSharpDiagnostic(test, expected);
 		}
+
+		protected override CodeFixProvider GetCSharpCodeFixProvider()
+		{
+			return new ConstantFixProvider();
+		}
+
+		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
+		{
+			return new DateTimeAnalyzer();
+		}
+
+
 	}
 }

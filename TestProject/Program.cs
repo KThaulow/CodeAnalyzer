@@ -32,6 +32,10 @@ namespace TestProject
 				i++;
 				return;
 			}
+
+			string date = DateTime.Now.ToString("mm/dd/yyyy HH:mm:ss");
+
+			string date2 = DateTime.Now.ToString("mm/dd/yyyy hh:mm:ss");
 		}
 
 
