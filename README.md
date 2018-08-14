@@ -8,3 +8,4 @@
 | AN0004 | [Use 24 hour time format](/docs/AN0002.md) | Usage |
 | AN0005 | [Add assertion in test](/docs/AN0002.md) | Usage |
 | AN0006 | [Use unit test method naming convention](/docs/AN0002.md) | Style |
+| AN0007 | [Use InvariantCulture for printing date](/docs/AN0002.md) | Usage |
