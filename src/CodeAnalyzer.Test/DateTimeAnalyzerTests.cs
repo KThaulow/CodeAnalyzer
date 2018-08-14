@@ -111,7 +111,7 @@ namespace ConsoleApplication1
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
-			return new DateTimeAnalyzer();
+			return new DateTimeKindAnalyzer();
 		}
 
 
