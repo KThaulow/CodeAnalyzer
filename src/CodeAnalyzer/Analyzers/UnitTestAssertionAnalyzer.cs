@@ -37,20 +37,22 @@ namespace CodeAnalyzer.Analyzers
 		{
 			var methodDeclarationSyntax = (MethodDeclarationSyntax)context.Node;
 
-			// Check if method contains assertion
-			if (methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
-				&& attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
-			{
-				int resursiveCallCounter = 0;
+            // Check if method contains assertion
+            if (!methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
+                && attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
+            {
+                return;
+            }
 
-				if (IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
-				{
-					return;
-				}
+            int resursiveCallCounter = 0;
 
-				context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-			}
-		}
+            if (IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+        }
 
 		private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
 		{
@@ -71,36 +73,42 @@ namespace CodeAnalyzer.Analyzers
 			return false;
 		}
 
-		private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
-		{
-			if (statement is ExpressionStatementSyntax expressionStatementSyntax)
-			{
-				// Check is the expression if an assertion
-				var expressionDescendants = expressionStatementSyntax.Expression.DescendantNodes();
-				if (expressionDescendants.Any(e => e is IdentifierNameSyntax identifierNameSyntax
-				&& s_AssertTokens.Any(i => i == identifierNameSyntax.Identifier.ValueText)))
-				{
-					return true;
-				}
+        private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
+        {
+            if (!(statement is ExpressionStatementSyntax expressionStatementSyntax))
+            {
+                return false;
+            }
+            // Check is the expression if an assertion
+            var expressionDescendants = expressionStatementSyntax.Expression.DescendantNodes();
 
-				// Check if any invoked methods are containing assertions
-				var symbol = context.SemanticModel.GetSymbolInfo(expressionStatementSyntax.Expression, context.CancellationToken).Symbol;
+            if (expressionDescendants.Any(e => e is IdentifierNameSyntax identifierNameSyntax
+                && s_AssertTokens.Any(i => i == identifierNameSyntax.Identifier.ValueText)))
+            {
+                return true;
+            }
 
-				if (symbol is IMethodSymbol methodSymbol)
-				{
-					var syntaxReference = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
-					if (syntaxReference != null)
-					{
-						var declaration = syntaxReference.GetSyntax(context.CancellationToken);
-						if (declaration is MethodDeclarationSyntax methodDeclarationSyntax
-							&& methodDeclarationSyntax.Modifiers.Any(e => e.Kind() == SyntaxKind.PrivateKeyword)
-							&& IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
-						{
-							return true;
-						}
-					}
-				}
-			}
+            // Check if any invoked methods are containing assertions
+            var symbol = context.SemanticModel.GetSymbolInfo(expressionStatementSyntax.Expression, context.CancellationToken).Symbol;
+
+            if (!(symbol is IMethodSymbol methodSymbol))
+            {
+                return false;
+            }
+
+            var syntaxReference = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+            if (syntaxReference is null)
+            {
+                return false;
+            }
+
+            var declaration = syntaxReference.GetSyntax(context.CancellationToken);
+            if (declaration is MethodDeclarationSyntax methodDeclarationSyntax
+                && methodDeclarationSyntax.Modifiers.Any(e => e.Kind() == SyntaxKind.PrivateKeyword)
+                && IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
+            {
+                return true;
+            }
 
 			return false;
 		}

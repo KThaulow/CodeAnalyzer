@@ -32,17 +32,19 @@ namespace CodeAnalyzer.Analyzers
 		{
 			var methodDeclarationSyntax = (MethodDeclarationSyntax)context.Node;
 
-			if (methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
-				&& attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
-			{
-				var methodName = methodDeclarationSyntax.Identifier.ValueText;
-				if (s_UnitTestNameRegex.IsMatch(methodName))
-				{
-					return;
-				}
+            if (!methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
+                && attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
+            {
+                return;
+            }
 
-				context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-			}
-		}
-	}
+            var methodName = methodDeclarationSyntax.Identifier.ValueText;
+            if (s_UnitTestNameRegex.IsMatch(methodName))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+        }
+    }
 }

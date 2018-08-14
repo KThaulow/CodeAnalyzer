@@ -42,7 +42,7 @@ namespace CodeAnalyzer.Analyzers
             foreach (var variable in localDeclaration.Declaration.Variables)
             {
                 var initializer = variable.Initializer;
-                if (initializer == null)
+                if (initializer is null)
                 {
                     return;
                 }

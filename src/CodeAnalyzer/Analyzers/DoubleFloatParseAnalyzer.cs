@@ -48,30 +48,32 @@ namespace CodeAnalyzer.Analyzers
 
 			ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
 
-			if (symbol != null)
-			{
-				INamedTypeSymbol containingType = symbol.ContainingType;
+            if (symbol is null)
+            {
+                return;
+            }
 
-				foreach (var registeredSymbol in registeredSymbols)
-				{
-					if (containingType?.Equals(registeredSymbol) == true)
-					{
-						if (symbol.Kind == SymbolKind.Method
-							&& (symbol.Name == "Parse" || symbol.Name == "TryParse"))
-						{
-							SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
+            INamedTypeSymbol containingType = symbol.ContainingType;
 
-							if (!arguments.Any())
-								return;
+            foreach (var registeredSymbol in registeredSymbols)
+            {
+                if (containingType?.Equals(registeredSymbol) == true)
+                {
+                    if (symbol.Kind == SymbolKind.Method
+                        && (symbol.Name == "Parse" || symbol.Name == "TryParse"))
+                    {
+                        SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
 
-							if (!arguments.Any(e => e.Expression.TryGetInferredMemberName() == "InvariantCulture"))
-							{
-								context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                        if (!arguments.Any())
+                            return;
+
+                        if (!arguments.Any(e => e.Expression.TryGetInferredMemberName() == "InvariantCulture"))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

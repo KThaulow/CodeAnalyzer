@@ -37,26 +37,28 @@ namespace CodeAnalyzer.Analyzers
 			{
 				INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName(SYSTEM_DATETIME);
 
-				if (dateTimeSymbol != null)
-				{
-					startContext.RegisterSyntaxNodeAction(
-						nodeContext => AnalyzeObjectCreationExpression(nodeContext, dateTimeSymbol),
-						SyntaxKind.ObjectCreationExpression);
-				}
-			});
-		}
+                if (dateTimeSymbol is null)
+                {
+                    return;
+                }
+
+                startContext.RegisterSyntaxNodeAction(
+                    nodeContext => AnalyzeObjectCreationExpression(nodeContext, dateTimeSymbol),
+                    SyntaxKind.ObjectCreationExpression);
+            });
+        }
 
 		private static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
 		{
 			var localDeclaration = (LocalDeclarationStatementSyntax)context.Node;
 
-			foreach (var variable in localDeclaration.Declaration.Variables)
-			{
-				var initializer = variable.Initializer;
-				if (initializer == null)
-				{
-					return;
-				}
+            foreach (var variable in localDeclaration.Declaration.Variables)
+            {
+                var initializer = variable.Initializer;
+                if (initializer is null)
+                {
+                    return;
+                }
 
 				AnalyzeExpressionSyntax(context, initializer.Value);
 			}
@@ -72,46 +74,52 @@ namespace CodeAnalyzer.Analyzers
 		{
 			var objectCreationSyntax = (ObjectCreationExpressionSyntax)context.Node;
 
-			ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreationSyntax, context.CancellationToken);
-			if (typeSymbol?.Equals(dateTimeSymbol) == true)
-			{
-				var dateTimeKindArgument = objectCreationSyntax.ArgumentList.Arguments.FirstOrDefault(e =>
-											(e is ArgumentSyntax argumentSyntax)
-											&& (argumentSyntax.Expression is MemberAccessExpressionSyntax memberSyntax)
-											&& (memberSyntax.Expression is IdentifierNameSyntax idSyntax)
-											&& idSyntax.Identifier.ValueText == DATETIMEKIND);
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreationSyntax, context.CancellationToken);
+            if (typeSymbol?.Equals(dateTimeSymbol) != true)
+            {
+                return;
+            }
 
-				if (dateTimeKindArgument == null)
-				{
-					context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-				}
-				else if (dateTimeKindArgument.Expression.TryGetInferredMemberName() != UTC)
-				{
-					context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-				}
-			}
-		}
+            var dateTimeKindArgument = objectCreationSyntax.ArgumentList.Arguments.FirstOrDefault(e =>
+                                        (e is ArgumentSyntax argumentSyntax)
+                                        && (argumentSyntax.Expression is MemberAccessExpressionSyntax memberSyntax)
+                                        && (memberSyntax.Expression is IdentifierNameSyntax idSyntax)
+                                        && idSyntax.Identifier.ValueText == DATETIMEKIND);
 
-		private static void AnalyzeExpressionSyntax(SyntaxNodeAnalysisContext context, ExpressionSyntax expressionSyntax)
-		{
-			if (expressionSyntax is MemberAccessExpressionSyntax memberAccessExpressionSyntax)
-			{
-				if (memberAccessExpressionSyntax.Expression is IdentifierNameSyntax identifierNameSyntax)
-				{
-					if (identifierNameSyntax.Identifier.ValueText != DATETIME)
-					{
-						return;
-					}
+            if (dateTimeKindArgument is null)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+            }
+            else if (dateTimeKindArgument.Expression.TryGetInferredMemberName() != UTC)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+            }
+        }
 
-					var memberName = memberAccessExpressionSyntax.TryGetInferredMemberName();
-					if (memberName != NOW)
-					{
-						return;
-					}
+        private static void AnalyzeExpressionSyntax(SyntaxNodeAnalysisContext context, ExpressionSyntax expressionSyntax)
+        {
+            if (!(expressionSyntax is MemberAccessExpressionSyntax memberAccessExpressionSyntax))
+            {
+                return;
+            }
 
-					context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-				}
-			}
-		}
-	}
+            if (!(memberAccessExpressionSyntax.Expression is IdentifierNameSyntax identifierNameSyntax))
+            {
+                return;
+            }
+
+            if (identifierNameSyntax.Identifier.ValueText != DATETIME)
+            {
+                return;
+            }
+
+            var memberName = memberAccessExpressionSyntax.TryGetInferredMemberName();
+            if (memberName != NOW)
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+        }
+    }
 }

@@ -71,13 +71,13 @@ namespace CodeAnalyzer
 			{
 				var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-				// Special case: Ensure that 'var' isn't actually an alias to another type
-				// (e.g. using var = System.String).
-				var aliasInfo = semanticModel.GetAliasInfo(variableTypeName, cancellationToken);
-				if (aliasInfo == null)
-				{
-					// Retrieve the type inferred for var.
-					var type = semanticModel.GetTypeInfo(variableTypeName, cancellationToken).ConvertedType;
+                // Special case: Ensure that 'var' isn't actually an alias to another type
+                // (e.g. using var = System.String).
+                var aliasInfo = semanticModel.GetAliasInfo(variableTypeName, cancellationToken);
+                if (aliasInfo is null)
+                {
+                    // Retrieve the type inferred for var.
+                    var type = semanticModel.GetTypeInfo(variableTypeName, cancellationToken).ConvertedType;
 
 					// Special case: Ensure that 'var' isn't actually a type named 'var'.
 					if (type.Name != "var")

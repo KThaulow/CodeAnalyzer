@@ -46,21 +46,23 @@ namespace CodeAnalyzer.Analyzers
 			}
 		}
 
-		private static void CheckStatement(SyntaxNodeAnalysisContext context, StatementSyntax statementSyntax)
-		{
-			if (statementSyntax is BlockSyntax blockSyntax)
-			{
-				foreach (var statement in blockSyntax.Statements)
-				{
-					if (statement is BreakStatementSyntax
-						|| statement is ReturnStatementSyntax)
-					{
-						return;
-					}
-				}
+        private static void CheckStatement(SyntaxNodeAnalysisContext context, StatementSyntax statementSyntax)
+        {
+            if (!(statementSyntax is BlockSyntax blockSyntax))
+            {
+                return;
+            }
 
-				context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-			}
-		}
-	}
+            foreach (var statement in blockSyntax.Statements)
+            {
+                if (statement is BreakStatementSyntax
+                    || statement is ReturnStatementSyntax)
+                {
+                    return;
+                }
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+        }
+    }
 }
