@@ -56,11 +56,9 @@
     <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeAnalyzer\CodeAnalyzer\CodeAnalyzer.csproj">
-      <Project>{724a2f8b-30ef-489e-bb1f-ae6ff76839af}</Project>
+    <ProjectReference Include="..\CodeAnalyzer\CodeAnalyzer.csproj">
+      <Project>{65860899-22ef-449b-9e3c-586d193aaf25}</Project>
       <Name>CodeAnalyzer</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
