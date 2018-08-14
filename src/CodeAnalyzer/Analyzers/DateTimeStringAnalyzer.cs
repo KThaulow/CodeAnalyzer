@@ -12,7 +12,7 @@ namespace CodeAnalyzer.Analyzers
 	{
 		public const string DiagnosticId = "DateTimeInvariantCulture";
 		private const string Title = "InvariantCulture for DateTime";
-		private const string MessageFormat = "Use InvariantCulture when printing date";
+		private const string MessageFormat = "Use InvariantCulture for printing date";
 		private const string Description = "Use InvariantCulture when calling ToString() on DateTime";
 		private const string Category = "Usage";
 

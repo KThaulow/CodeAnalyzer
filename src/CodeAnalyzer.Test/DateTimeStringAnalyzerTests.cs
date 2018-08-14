@@ -51,7 +51,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "DateTimeInvariantCulture",
-				Message = String.Format("Use InvariantCulture when printing date"),
+				Message = String.Format("Use InvariantCulture for printing date"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] { new DiagnosticResultLocation("Test0.cs", 10, 15) }
