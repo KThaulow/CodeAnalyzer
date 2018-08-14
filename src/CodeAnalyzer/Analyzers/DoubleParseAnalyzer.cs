@@ -12,8 +12,8 @@ namespace CodeAnalyzer.Analyzers
 	{
 		public const string DiagnosticId = "DoubleParseInvariantCulture";
 		private const string Title = "Use InvariantCulture when parsing a double";
-		private const string MessageFormat = "Can use InvariantCulture for parsing";
-		private const string Description = "Use InvariantCulture";
+		private const string MessageFormat = "Use InvariantCulture for double parsing";
+		private const string Description = "Use InvariantCulture when parsing a double to string";
 		private const string Category = "Usage";
 
 		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);

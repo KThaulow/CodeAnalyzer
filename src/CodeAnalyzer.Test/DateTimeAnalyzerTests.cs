@@ -30,7 +30,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "DateTimeUTC",
-				Message = String.Format("Can be made DateTime.UtcNow"),
+				Message = String.Format("DateTime kind should be UTC"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {
@@ -60,7 +60,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "DateTimeUTC",
-				Message = String.Format("Can be made DateTime.UtcNow"),
+				Message = String.Format("DateTime kind should be UTC"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {
@@ -93,7 +93,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "DateTimeUTC",
-				Message = String.Format("Can be made DateTime.UtcNow"),
+				Message = String.Format("DateTime kind should be UTC"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {

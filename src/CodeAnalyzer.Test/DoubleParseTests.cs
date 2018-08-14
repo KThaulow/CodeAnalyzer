@@ -52,7 +52,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "DoubleParseInvariantCulture",
-				Message = String.Format("Can use InvariantCulture for parsing"),
+				Message = String.Format("Use InvariantCulture for double parsing"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] { new DiagnosticResultLocation("Test0.cs", 10, 26) }
@@ -102,7 +102,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "DoubleParseInvariantCulture",
-				Message = String.Format("Can use InvariantCulture for parsing"),
+				Message = String.Format("Use InvariantCulture for double parsing"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] { new DiagnosticResultLocation("Test0.cs", 10, 20) }

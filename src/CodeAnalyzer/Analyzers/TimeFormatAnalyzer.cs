@@ -11,7 +11,7 @@ namespace CodeAnalyzer.Analyzers
 	{
 		public const string DiagnosticId = "HourFormat24";
 		private const string Title = "24 hour format for times";
-		private const string MessageFormat = "Use 24 hour format instead of 12 hour format";
+		private const string MessageFormat = "Use 24 hour time format";
 		private const string Description = "Use 24 hour format instead of 12 hour format";
 		private const string Category = "Usage";
 

@@ -34,7 +34,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "CircuitBreaker",
-				Message = String.Format("Add circuit breaker to loop"),
+				Message = String.Format("Add circuit breaker in loop"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {
@@ -116,7 +116,7 @@ namespace ConsoleApplication1
 			var expected = new DiagnosticResult
 			{
 				Id = "CircuitBreaker",
-				Message = String.Format("Add circuit breaker to loop"),
+				Message = String.Format("Add circuit breaker in loop"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
 					new[] {

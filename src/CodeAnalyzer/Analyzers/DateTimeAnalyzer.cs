@@ -13,8 +13,8 @@ namespace CodeAnalyzer.Analyzers
 	{
 		public const string DiagnosticId = "DateTimeUTC";
 		private const string Title = "DateTime should be UTC";
-		private const string MessageFormat = "Can be made DateTime.UtcNow";
-		private const string Description = "Make UTC";
+		private const string MessageFormat = "DateTime kind should be UTC";
+		private const string Description = "DateTime kind should be UTC";
 		private const string Category = "Usage";
 
 		private const string SYSTEM_DATETIME = "System.DateTime";

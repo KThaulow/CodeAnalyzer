@@ -13,8 +13,8 @@ namespace CodeAnalyzer.Analyzers
 	{
 		public const string DiagnosticId = "UnitTestAssertion";
 		private const string Title = "Unit test without assertion";
-		private const string MessageFormat = "Unit test should contain an assertion";
-		private const string Description = "Unit test should contain an assertion";
+		private const string MessageFormat = "Add assertion in test";
+		private const string Description = "Test should contain an assertion";
 		private const string Category = "Usage";
 		private const int MAX_RECURSIVE_CALLS = 5;
 
