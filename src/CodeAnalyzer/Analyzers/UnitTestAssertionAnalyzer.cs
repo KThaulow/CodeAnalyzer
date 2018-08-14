@@ -18,13 +18,13 @@ namespace CodeAnalyzer.Analyzers
 		private const string Category = "Usage";
 		private const int MAX_RECURSIVE_CALLS = 5;
 
-		private static List<string> s_AssertTokens = new List<string>()
+		private static readonly List<string> s_AssertTokens = new List<string>()
 		{
 			"Should",
 			"Assert"
 		};
 
-		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
+		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
@@ -84,9 +84,9 @@ namespace CodeAnalyzer.Analyzers
 				}
 
 				// Check if any invoked methods are containing assertions
-				var methodSymbol = context.SemanticModel.GetSymbolInfo(expressionStatementSyntax.Expression, context.CancellationToken).Symbol as IMethodSymbol;
+				var symbol = context.SemanticModel.GetSymbolInfo(expressionStatementSyntax.Expression, context.CancellationToken).Symbol;
 
-				if (methodSymbol != null)
+				if (symbol is IMethodSymbol methodSymbol)
 				{
 					var syntaxReference = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
 					if (syntaxReference != null)

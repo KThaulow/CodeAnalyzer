@@ -17,7 +17,7 @@ namespace CodeAnalyzer.Analyzers
 		private const string Description = "Use InvariantCulture when calling ToString() on DateTime";
 		private const string Category = "Usage";
 
-		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
@@ -29,21 +29,18 @@ namespace CodeAnalyzer.Analyzers
 				INamedTypeSymbol dateTimeOffsetSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTimeOffset");
 				INamedTypeSymbol timeSpanSynbol = startContext.Compilation.GetTypeByMetadataName("System.TimeSpan");
 
-				var registeredSymbols = new List<INamedTypeSymbol>()
-				{
-					dateTimeSymbol,
-					dateTimeOffsetSymbol,
-					timeSpanSynbol
-				};
+                var registeredSymbols = new INamedTypeSymbol[]
+                {
+                    dateTimeSymbol,
+                    dateTimeOffsetSymbol,
+                    timeSpanSynbol
+                };
 
-				if (dateTimeSymbol != null)
-				{
-					startContext.RegisterSyntaxNodeAction(
-						nodeContext => AnalyzeInvocationExpressionSyntax(nodeContext, registeredSymbols),
-						SyntaxKind.InvocationExpression);
-				}
-			});
-		}
+                startContext.RegisterSyntaxNodeAction(
+                    nodeContext => AnalyzeInvocationExpressionSyntax(nodeContext, registeredSymbols),
+                    SyntaxKind.InvocationExpression);
+            });
+        }
 
 		private static void AnalyzeInvocationExpressionSyntax(SyntaxNodeAnalysisContext context, IEnumerable<INamedTypeSymbol> registeredSymbols)
 		{

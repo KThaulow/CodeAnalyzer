@@ -13,8 +13,8 @@ namespace CodeAnalyzer
 		   ExpressionSyntax expression,
 		   CancellationToken cancellationToken = default(CancellationToken))
 		{
-			return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
-				.GetTypeInfo(semanticModel, expression, cancellationToken)
+			return semanticModel
+				.GetTypeInfo(expression, cancellationToken)
 				.Type;
 		}
 
@@ -23,19 +23,18 @@ namespace CodeAnalyzer
 		  ExpressionSyntax expression,
 		  CancellationToken cancellationToken = default(CancellationToken))
 		{
-			return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
-				.GetSymbolInfo(semanticModel, expression, cancellationToken)
+			return semanticModel
+				.GetSymbolInfo(expression, cancellationToken)
 				.Symbol;
 		}
-
 
 		public static ISymbol GetSymbol(
 			this SemanticModel semanticModel,
 			AttributeSyntax attribute,
 			CancellationToken cancellationToken = default(CancellationToken))
 		{
-			return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
-				.GetSymbolInfo(semanticModel, attribute, cancellationToken)
+			return semanticModel
+				.GetSymbolInfo(attribute, cancellationToken)
 				.Symbol;
 		}
 

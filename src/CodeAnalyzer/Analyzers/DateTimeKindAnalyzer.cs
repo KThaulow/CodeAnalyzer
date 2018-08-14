@@ -23,7 +23,7 @@ namespace CodeAnalyzer.Analyzers
 		private const string DATETIMEKIND = "DateTimeKind";
 		private const string UTC = "Utc";
 
-		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
@@ -62,12 +62,11 @@ namespace CodeAnalyzer.Analyzers
 			}
 		}
 
-
-		private static void AnalyzeArgument(SyntaxNodeAnalysisContext context)
-		{
-			var argumentSyntax = (ArgumentSyntax)context.Node;
-			AnalyzeExpressionSyntax(context, argumentSyntax.Expression);
-		}
+        private static void AnalyzeArgument(SyntaxNodeAnalysisContext context)
+        {
+            var argumentSyntax = (ArgumentSyntax)context.Node;
+            AnalyzeExpressionSyntax(context, argumentSyntax.Expression);
+        }
 
 		private static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol dateTimeSymbol)
 		{

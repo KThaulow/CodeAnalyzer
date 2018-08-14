@@ -91,11 +91,11 @@ namespace TestHelper
 
 				if (codeFixIndex != null)
 				{
-					document = ApplyFix(document, actions.ElementAt((int)codeFixIndex));
+					document = ApplyFix(document, actions[(int)codeFixIndex]);
 					break;
 				}
 
-				document = ApplyFix(document, actions.ElementAt(0));
+				document = ApplyFix(document, actions[0]);
 				analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });
 
 				var newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, GetCompilerDiagnostics(document));

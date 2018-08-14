@@ -103,7 +103,7 @@ namespace TestHelper
         /// <param name="expectedResults">Diagnostic Results that should have appeared in the code</param>
         private static void VerifyDiagnosticResults(IEnumerable<Diagnostic> actualResults, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expectedResults)
         {
-            int expectedCount = expectedResults.Count();
+            int expectedCount = expectedResults.Length;
             int actualCount = actualResults.Count();
 
             if (expectedCount != actualCount)
@@ -130,7 +130,7 @@ namespace TestHelper
                 }
                 else
                 {
-                    VerifyDiagnosticLocation(analyzer, actual, actual.Location, expected.Locations.First());
+                    VerifyDiagnosticLocation(analyzer, actual, actual.Location, expected.Locations[0]);
                     var additionalLocations = actual.AdditionalLocations.ToArray();
 
                     if (additionalLocations.Length != expected.Locations.Length - 1)
@@ -223,7 +223,7 @@ namespace TestHelper
             var builder = new StringBuilder();
             for (int i = 0; i < diagnostics.Length; ++i)
             {
-                builder.AppendLine("// " + diagnostics[i].ToString());
+                builder.Append("// ").AppendLine(diagnostics[i].ToString());
 
                 var analyzerType = analyzer.GetType();
                 var rules = analyzer.SupportedDiagnostics;

@@ -14,8 +14,9 @@ using System.Threading.Tasks;
 
 namespace CodeAnalyzer
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeAnalyzerCodeFixProvider)), Shared]
-	public class ConstantFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeAnalyzerCodeFixProvider))]
+    [Shared]
+    public class ConstantFixProvider : CodeFixProvider
 	{
 		private const string title = "Make constant";
 
@@ -33,7 +34,7 @@ namespace CodeAnalyzer
 		{
 			var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-			var diagnostic = context.Diagnostics.First();
+			var diagnostic = context.Diagnostics[0];
 			var diagnosticSpan = diagnostic.Location.SourceSpan;
 
 			// Find the type declaration identified by the diagnostic.
@@ -68,15 +69,15 @@ namespace CodeAnalyzer
 			var variableTypeName = variableDeclaration.Type;
 			if (variableTypeName.IsVar)
 			{
-				var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+				var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
 				// Special case: Ensure that 'var' isn't actually an alias to another type
 				// (e.g. using var = System.String).
-				var aliasInfo = semanticModel.GetAliasInfo(variableTypeName);
+				var aliasInfo = semanticModel.GetAliasInfo(variableTypeName, cancellationToken);
 				if (aliasInfo == null)
 				{
 					// Retrieve the type inferred for var.
-					var type = semanticModel.GetTypeInfo(variableTypeName).ConvertedType;
+					var type = semanticModel.GetTypeInfo(variableTypeName, cancellationToken).ConvertedType;
 
 					// Special case: Ensure that 'var' isn't actually a type named 'var'.
 					if (type.Name != "var")
@@ -104,7 +105,7 @@ namespace CodeAnalyzer
 			var formattedLocal = newLocal.WithAdditionalAnnotations(Formatter.Annotation);
 
 			// Replace the old local declaration with the new local declaration.
-			var root = await document.GetSyntaxRootAsync(cancellationToken);
+			var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 			var newRoot = root.ReplaceNode(localDeclaration, formattedLocal);
 
 			// Return document with transformed tree.

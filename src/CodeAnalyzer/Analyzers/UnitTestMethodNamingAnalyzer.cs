@@ -17,9 +17,9 @@ namespace CodeAnalyzer.Analyzers
 		private const string Description = "Use unit test method naming convention";
 		private const string Category = "Style";
 
-		private static Regex s_UnitTestNameRegex = new Regex("[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+");
+		private static readonly Regex s_UnitTestNameRegex = new Regex("[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+");
 
-		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
+		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 

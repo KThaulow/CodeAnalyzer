@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 
 namespace CodeAnalyzer
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeAnalyzerCodeFixProvider)), Shared]
-	public class CodeAnalyzerCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeAnalyzerCodeFixProvider))]
+    [Shared]
+    public class CodeAnalyzerCodeFixProvider : CodeFixProvider
 	{
 		private const string title = "Make uppercase";
 
@@ -33,7 +34,7 @@ namespace CodeAnalyzer
 			var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
 			// TODO: Replace the following code with your own analysis, generating a CodeAction for each fix to suggest
-			var diagnostic = context.Diagnostics.First();
+			var diagnostic = context.Diagnostics[0];
 			var diagnosticSpan = diagnostic.Location.SourceSpan;
 
 			// Find the type declaration identified by the diagnostic.
@@ -55,7 +56,7 @@ namespace CodeAnalyzer
 			var newName = identifierToken.Text.ToUpperInvariant();
 
 			// Get the symbol representing the type to be renamed.
-			var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+			var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 			var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken);
 
 			// Produce a new solution that has all references to that type renamed, including the declaration.

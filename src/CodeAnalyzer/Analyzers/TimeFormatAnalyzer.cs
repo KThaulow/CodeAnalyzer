@@ -15,7 +15,7 @@ namespace CodeAnalyzer.Analyzers
 		private const string Description = "Use 24 hour format instead of 12 hour format";
 		private const string Category = "Usage";
 
-		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
@@ -54,21 +54,19 @@ namespace CodeAnalyzer.Analyzers
 						if (!arguments.Any())
 							return;
 
-
-						foreach (var argument in arguments)
-						{
-							if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax)
-							{
-								if (literalExpressionSyntax.Token.ValueText.Contains("hh"))
-								{
-									context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-	}
+                        foreach (var argument in arguments)
+                        {
+                            if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax)
+                            {
+                                if (literalExpressionSyntax.Token.ValueText.Contains("hh"))
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
