@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TestProject
 {
@@ -23,6 +21,10 @@ namespace TestProject
 			string date = DateTime.Now.ToString("mm/dd/yyyy HH:mm:ss");
 
 			string date2 = DateTime.Now.ToString("mm/dd/yyyy hh:mm:ss");
+
+			string dateTimeOffset = new DateTimeOffset(0, new TimeSpan(0)).ToString("mm/dd/yyyy hh:mm:ss");
+
+			var timeSpan = new TimeSpan(0).ToString("mm/dd/yyyy hh:mm:ss");
 		}
 
 		private void MyMethod(DateTime dateTime)
