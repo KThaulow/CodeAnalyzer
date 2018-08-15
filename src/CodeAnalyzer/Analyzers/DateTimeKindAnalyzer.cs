@@ -84,10 +84,9 @@ namespace CodeAnalyzer.Analyzers
 
 				if (dateTimeKindArgument == null)
 				{
-					return;
+					context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
 				}
-
-				if (dateTimeKindArgument.Expression.TryGetInferredMemberName() != UTC)
+				else if (dateTimeKindArgument.Expression.TryGetInferredMemberName() != UTC)
 				{
 					context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
 				}

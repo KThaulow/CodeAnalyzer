@@ -41,21 +41,24 @@ namespace CodeAnalyzer.Analyzers
 
 			ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
 
-			INamedTypeSymbol containingType = symbol.ContainingType;
-
-			if (containingType?.Equals(doubleSymbol) == true)
+			if (symbol != null)
 			{
-				if (symbol.Kind == SymbolKind.Method
-					&& (symbol.Name == "Parse" || symbol.Name == "TryParse"))
+				INamedTypeSymbol containingType = symbol.ContainingType;
+
+				if (containingType?.Equals(doubleSymbol) == true)
 				{
-					SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
-
-					if (!arguments.Any())
-						return;
-
-					if (!arguments.Any(e => e.Expression.TryGetInferredMemberName() == "InvariantCulture"))
+					if (symbol.Kind == SymbolKind.Method
+						&& (symbol.Name == "Parse" || symbol.Name == "TryParse"))
 					{
-						context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+						SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
+
+						if (!arguments.Any())
+							return;
+
+						if (!arguments.Any(e => e.Expression.TryGetInferredMemberName() == "InvariantCulture"))
+						{
+							context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+						}
 					}
 				}
 			}

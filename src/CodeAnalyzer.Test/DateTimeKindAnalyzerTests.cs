@@ -1,5 +1,6 @@
 ﻿
 using CodeAnalyzer.Analyzers;
+using CodeAnalyzer.Test.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -10,7 +11,7 @@ using TestHelper;
 namespace CodeAnalyzer.Test
 {
 	[TestClass]
-	public class DateTimeAnalyzerTests : CodeFixVerifier
+	public class DateTimeKindAnalyzerTests : CodeFixVerifier
 	{
 		[TestMethod]
 		public void DateTimeAnalyzer_InitializeDateTimeNow_ProposeFix()
@@ -67,6 +68,19 @@ namespace ConsoleApplication1
 							new DiagnosticResultLocation("Test0.cs", 9,24)
 						}
 			};
+
+			VerifyCSharpDiagnostic(test, expected);
+		}
+
+		[TestMethod]
+		public void DateTimeAnalyzer_InitializeDateTimeTicks_ProposeFix()
+		{
+			var nameSpace = @"using System;";
+			var method = @"DateTime dateTime = new DateTime(0);";
+
+			var test = CodeTestHelper.GetCodeInMainMethod(nameSpace, method);
+
+			var expected = CodeTestHelper.CreateDiagnosticResult("DateTimeUTC", "DateTime kind should be UTC", 9, 24);
 
 			VerifyCSharpDiagnostic(test, expected);
 		}

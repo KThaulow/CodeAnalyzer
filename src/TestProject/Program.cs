@@ -11,11 +11,7 @@ namespace TestProject
 			int j = 2;
 			int k = i + j;
 
-			var dateTime = DateTime.Now;
-
-			var dateTime2 = new DateTime(0, 0, 0, 0, 0, 0, DateTimeKind.Local);
-
-			MyMethod(DateTime.Now);
+			var str = nameof(args);
 
 			double parsedDouble = double.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
 
@@ -25,22 +21,23 @@ namespace TestProject
 
 			bool didParse2 = double.TryParse("1.1", out double parsedDouble4);
 
-			int i = 0;
+			int l = 0;
 			while (i < 10)
 			{
-				i--;
-				i++;
+				l--;
+				l++;
 				return;
 			}
 
-			string date = DateTime.Now.ToString("mm/dd/yyyy HH:mm:ss");
+			while (i < 10)
+			{
+				l--;
+				l++;
+			}
 
-			string date2 = DateTime.Now.ToString("mm/dd/yyyy hh:mm:ss");
 		}
 
 
-		private static void MyMethod(DateTime dateTime)
-		{
-		}
+
 	}
 }

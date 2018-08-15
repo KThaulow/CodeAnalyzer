@@ -40,26 +40,29 @@ namespace CodeAnalyzer.Analyzers
 
 			ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
 
-			INamedTypeSymbol containingType = symbol.ContainingType;
-
-			if (containingType?.Equals(dateTimeSymbol) == true)
+			if (symbol != null)
 			{
-				if (symbol.Kind == SymbolKind.Method
-					&& (symbol.Name == "ToString"))
+				INamedTypeSymbol containingType = symbol.ContainingType;
+
+				if (containingType?.Equals(dateTimeSymbol) == true)
 				{
-					SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
-
-					if (!arguments.Any())
-						return;
-
-
-					foreach (var argument in arguments)
+					if (symbol.Kind == SymbolKind.Method
+						&& (symbol.Name == "ToString"))
 					{
-						if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax)
+						SeparatedSyntaxList<ArgumentSyntax> arguments = invocationExpressionSyntax.ArgumentList.Arguments;
+
+						if (!arguments.Any())
+							return;
+
+
+						foreach (var argument in arguments)
 						{
-							if (literalExpressionSyntax.Token.ValueText.Contains("hh"))
+							if (argument.Expression is LiteralExpressionSyntax literalExpressionSyntax)
 							{
-								context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+								if (literalExpressionSyntax.Token.ValueText.Contains("hh"))
+								{
+									context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+								}
 							}
 						}
 					}

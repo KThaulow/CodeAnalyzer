@@ -11,8 +11,8 @@ namespace CodeAnalyzer.Analyzers
 	{
 		public const string DiagnosticId = "CircuitBreaker";
 		private const string Title = "Circuit breaker in loop";
-		private const string MessageFormat = "Add circuit breaker in loop";
-		private const string Description = "Add circuit breaker in loop";
+		private const string MessageFormat = "Add circuit breaker to loop";
+		private const string Description = "Add circuit breaker to loop";
 		private const string Category = "Usage";
 
 		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
