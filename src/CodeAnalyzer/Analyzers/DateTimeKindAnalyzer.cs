@@ -11,7 +11,7 @@ namespace CodeAnalyzer.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class DateTimeKindAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "DateTimeUTC";
+		public const string DiagnosticId = "AN0002";
 		private const string Title = "DateTime should be UTC";
 		private const string MessageFormat = "DateTime kind should be UTC";
 		private const string Description = "DateTime kind should be UTC";

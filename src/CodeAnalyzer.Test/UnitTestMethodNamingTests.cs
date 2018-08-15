@@ -29,7 +29,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "UnitTestMethodNaming",
+				Id = "AN0006",
 				Message = String.Format("Use unit test method naming convention: [UnitToTest]_[Scenario]_[ExpectedOutcome]"),
 				Severity = DiagnosticSeverity.Info,
 				Locations =

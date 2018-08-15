@@ -30,7 +30,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "DateTimeUTC",
+				Id = "AN0002",
 				Message = String.Format("DateTime kind should be UTC"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
@@ -60,7 +60,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "DateTimeUTC",
+				Id = "AN0002",
 				Message = String.Format("DateTime kind should be UTC"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
@@ -80,7 +80,7 @@ namespace ConsoleApplication1
 
 			var test = CodeTestHelper.GetCodeInMainMethod(nameSpace, method);
 
-			var expected = CodeTestHelper.CreateDiagnosticResult("DateTimeUTC", "DateTime kind should be UTC", 9, 24);
+			var expected = CodeTestHelper.CreateDiagnosticResult("AN0002", "DateTime kind should be UTC", 9, 24);
 
 			VerifyCSharpDiagnostic(test, expected);
 		}
@@ -106,7 +106,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "DateTimeUTC",
+				Id = "AN0002",
 				Message = String.Format("DateTime kind should be UTC"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =

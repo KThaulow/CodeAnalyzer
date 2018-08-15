@@ -9,7 +9,7 @@ namespace CodeAnalyzer.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class TimeFormatAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "HourFormat24";
+		public const string DiagnosticId = "AN0004";
 		private const string Title = "24 hour format for times";
 		private const string MessageFormat = "Use 24 hour time format";
 		private const string Description = "Use 24 hour format instead of 12 hour format";

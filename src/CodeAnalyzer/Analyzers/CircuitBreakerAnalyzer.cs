@@ -9,7 +9,7 @@ namespace CodeAnalyzer.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class CircuitBreakerAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "CircuitBreaker";
+		public const string DiagnosticId = "AN0001";
 		private const string Title = "Circuit breaker in loop";
 		private const string MessageFormat = "Add circuit breaker to loop";
 		private const string Description = "Add circuit breaker to loop";

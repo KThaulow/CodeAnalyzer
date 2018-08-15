@@ -29,7 +29,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "HourFormat24",
+				Id = "AN0004",
 				Message = String.Format("Use 24 hour time format"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =

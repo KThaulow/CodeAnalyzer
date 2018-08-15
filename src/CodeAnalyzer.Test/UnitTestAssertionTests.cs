@@ -32,7 +32,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "UnitTestAssertion",
+				Id = "AN0005",
 				Message = String.Format("Add assertion in test"),
 				Severity = DiagnosticSeverity.Info,
 				Locations =

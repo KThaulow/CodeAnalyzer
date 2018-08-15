@@ -51,7 +51,7 @@ namespace ConsoleApplication1
 
 			var expected = new DiagnosticResult
 			{
-				Id = "DateTimeInvariantCulture",
+				Id = "AN0007",
 				Message = String.Format("Use InvariantCulture for printing date/time"),
 				Severity = DiagnosticSeverity.Warning,
 				Locations =
@@ -69,7 +69,7 @@ namespace ConsoleApplication1
 
 			var test = CodeTestHelper.GetCodeInMainMethod(nameSpace, method);
 
-			var expected = CodeTestHelper.CreateDiagnosticResult("DateTimeInvariantCulture", "Use InvariantCulture for printing date/time", 9, 28);
+			var expected = CodeTestHelper.CreateDiagnosticResult("AN0007", "Use InvariantCulture for printing date/time", 9, 28);
 
 			VerifyCSharpDiagnostic(test, expected);
 		}
@@ -82,7 +82,7 @@ namespace ConsoleApplication1
 
 			var test = CodeTestHelper.GetCodeInMainMethod(nameSpace, method);
 
-			var expected = CodeTestHelper.CreateDiagnosticResult("DateTimeInvariantCulture", "Use InvariantCulture for printing date/time", 9, 19);
+			var expected = CodeTestHelper.CreateDiagnosticResult("AN0007", "Use InvariantCulture for printing date/time", 9, 19);
 
 			VerifyCSharpDiagnostic(test, expected);
 		}

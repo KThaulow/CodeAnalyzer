@@ -11,7 +11,7 @@ namespace CodeAnalyzer.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class UnitTestMethodNamingAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "UnitTestMethodNaming";
+		public const string DiagnosticId = "AN0006";
 		private const string Title = "Unit test method naming";
 		private const string MessageFormat = "Use unit test method naming convention: [UnitToTest]_[Scenario]_[ExpectedOutcome]";
 		private const string Description = "Use unit test method naming convention";

@@ -11,7 +11,7 @@ namespace CodeAnalyzer.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class DateAndTimeStringAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "DateTimeInvariantCulture";
+		public const string DiagnosticId = "AN0007";
 		private const string Title = "InvariantCulture for date/time";
 		private const string MessageFormat = "Use InvariantCulture for printing date/time";
 		private const string Description = "Use InvariantCulture when calling ToString() on DateTime";

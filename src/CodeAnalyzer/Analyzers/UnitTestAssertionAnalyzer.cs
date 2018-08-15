@@ -11,7 +11,7 @@ namespace CodeAnalyzer.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class UnitTestAssertionAnalyzer : DiagnosticAnalyzer
 	{
-		public const string DiagnosticId = "UnitTestAssertion";
+		public const string DiagnosticId = "AN0005";
 		private const string Title = "Unit test without assertion";
 		private const string MessageFormat = "Add assertion in test";
 		private const string Description = "Test should contain an assertion";
