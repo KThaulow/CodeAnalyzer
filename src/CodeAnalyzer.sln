@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeAnalyzer", "src\CodeAnalyzer\CodeAnalyzer.csproj", "{65860899-22EF-449B-9E3C-586D193AAF25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeAnalyzer", "CodeAnalyzer\CodeAnalyzer.csproj", "{6880322A-9EBC-4F2A-9478-1825653474CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeAnalyzer.Test", "src\CodeAnalyzer.Test\CodeAnalyzer.Test.csproj", "{0720C667-0202-49DA-A2A0-B41DFD6D4674}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeAnalyzer.Test", "CodeAnalyzer.Test\CodeAnalyzer.Test.csproj", "{DCE60F41-A4AA-4AC5-96E9-D06E673556DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeAnalyzer.Vsix", "src\CodeAnalyzer.Vsix\CodeAnalyzer.Vsix.csproj", "{0AD8027C-2BAA-4D39-91D4-51D01E2FEE23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeAnalyzer.Vsix", "CodeAnalyzer.Vsix\CodeAnalyzer.Vsix.csproj", "{0AD8027C-2BAA-4D39-91D4-51D01E2FEE23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +15,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{65860899-22EF-449B-9E3C-586D193AAF25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65860899-22EF-449B-9E3C-586D193AAF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65860899-22EF-449B-9E3C-586D193AAF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65860899-22EF-449B-9E3C-586D193AAF25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0720C667-0202-49DA-A2A0-B41DFD6D4674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0720C667-0202-49DA-A2A0-B41DFD6D4674}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0720C667-0202-49DA-A2A0-B41DFD6D4674}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0720C667-0202-49DA-A2A0-B41DFD6D4674}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6880322A-9EBC-4F2A-9478-1825653474CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6880322A-9EBC-4F2A-9478-1825653474CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6880322A-9EBC-4F2A-9478-1825653474CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6880322A-9EBC-4F2A-9478-1825653474CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE60F41-A4AA-4AC5-96E9-D06E673556DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE60F41-A4AA-4AC5-96E9-D06E673556DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE60F41-A4AA-4AC5-96E9-D06E673556DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE60F41-A4AA-4AC5-96E9-D06E673556DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0AD8027C-2BAA-4D39-91D4-51D01E2FEE23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0AD8027C-2BAA-4D39-91D4-51D01E2FEE23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AD8027C-2BAA-4D39-91D4-51D01E2FEE23}.Release|Any CPU.ActiveCfg = Release|Any CPU
