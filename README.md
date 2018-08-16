@@ -1,6 +1,6 @@
-## CodeAnalyzer
+# CodeAnalyzer
 
-# Analyzers
+## Analyzers
 
 | Id  | Title | Category |
 | --- | ----- | -------- |
