@@ -1,5 +1,7 @@
 ## CodeAnalyzer
 
+# Analyzers
+
 | Id  | Title | Category |
 | --- | ----- | -------- |
 | AN0001 | [Add circuit breaker to loop](/docs/AN0001.md) | Usage |
