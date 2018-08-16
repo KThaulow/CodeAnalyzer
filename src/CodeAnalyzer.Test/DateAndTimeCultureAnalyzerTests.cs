@@ -10,7 +10,7 @@ using TestHelper;
 namespace CodeAnalyzer.Test
 {
 	[TestClass]
-	public class DateAndTimeStringAnalyzerTests : CodeFixVerifier
+	public class DateAndTimeCultureAnalyzerTests : CodeFixVerifier
 	{
 		[TestMethod]
 		public void DateAndTimeStringAnalyzer_ToStringWitInvarientCulture_Ignore()
@@ -96,7 +96,7 @@ namespace ConsoleApplication1
 
 		protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
 		{
-			return new DateAndTimeStringAnalyzer();
+			return new DateAndTimeCultureAnalyzer();
 		}
 	}
 }

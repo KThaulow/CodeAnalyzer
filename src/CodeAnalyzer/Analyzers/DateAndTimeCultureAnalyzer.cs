@@ -9,7 +9,7 @@ using System.Linq;
 namespace CodeAnalyzer.Analyzers
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class DateAndTimeStringAnalyzer : DiagnosticAnalyzer
+	public class DateAndTimeCultureAnalyzer : DiagnosticAnalyzer
 	{
 		public const string DiagnosticId = "AN0007";
 		private const string Title = "InvariantCulture for date/time";

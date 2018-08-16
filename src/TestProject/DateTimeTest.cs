@@ -25,6 +25,12 @@ namespace TestProject
 			string dateTimeOffset = new DateTimeOffset(0, new TimeSpan(0)).ToString("mm/dd/yyyy hh:mm:ss");
 
 			var timeSpan = new TimeSpan(0).ToString("mm/dd/yyyy hh:mm:ss");
+
+
+			var date3 = DateTime.UtcNow.ToString("yyyy/mm/dd");
+
+			string dateTimeOffset2 = DateTimeOffset.Now.ToString("yyyy/mm/dd");
+
 		}
 
 		private void MyMethod(DateTime dateTime)
