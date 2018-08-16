@@ -8,26 +8,26 @@ using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
-	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class DateAndTimeStringAnalyzer : DiagnosticAnalyzer
-	{
-		public const string DiagnosticId = "AN0007";
-		private const string Title = "InvariantCulture for date/time";
-		private const string MessageFormat = "Use InvariantCulture for printing date/time";
-		private const string Description = "Use InvariantCulture when calling ToString() on DateTime";
-		private const string Category = "Usage";
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class DateAndTimeStringAnalyzer : DiagnosticAnalyzer
+    {
+        public const string DiagnosticId = "AN0007";
+        private const string Title = "InvariantCulture for date/time";
+        private const string MessageFormat = "Use InvariantCulture for printing date/time";
+        private const string Description = "Use InvariantCulture when calling ToString() on DateTime";
+        private const string Category = "Usage";
 
-		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
-		public override void Initialize(AnalysisContext context)
-		{
-			context.RegisterCompilationStartAction(startContext =>
-			{
-				INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTime");
-				INamedTypeSymbol dateTimeOffsetSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTimeOffset");
-				INamedTypeSymbol timeSpanSynbol = startContext.Compilation.GetTypeByMetadataName("System.TimeSpan");
+        public override void Initialize(AnalysisContext context)
+        {
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTime");
+                INamedTypeSymbol dateTimeOffsetSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTimeOffset");
+                INamedTypeSymbol timeSpanSynbol = startContext.Compilation.GetTypeByMetadataName("System.TimeSpan");
 
                 var registeredSymbols = new INamedTypeSymbol[]
                 {
@@ -42,11 +42,11 @@ namespace CodeAnalyzer.Analyzers
             });
         }
 
-		private static void AnalyzeInvocationExpressionSyntax(SyntaxNodeAnalysisContext context, IEnumerable<INamedTypeSymbol> registeredSymbols)
-		{
-			var invocationExpressionSyntax = (InvocationExpressionSyntax)context.Node;
+        private static void AnalyzeInvocationExpressionSyntax(SyntaxNodeAnalysisContext context, IEnumerable<INamedTypeSymbol> registeredSymbols)
+        {
+            var invocationExpressionSyntax = (InvocationExpressionSyntax)context.Node;
 
-			ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
+            ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
 
             if (symbol is null)
             {

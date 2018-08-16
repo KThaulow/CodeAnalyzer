@@ -8,34 +8,34 @@ using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
-	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class UnitTestAssertionAnalyzer : DiagnosticAnalyzer
-	{
-		public const string DiagnosticId = "AN0005";
-		private const string Title = "Unit test without assertion";
-		private const string MessageFormat = "Add assertion in test";
-		private const string Description = "Test should contain an assertion";
-		private const string Category = "Usage";
-		private const int MAX_RECURSIVE_CALLS = 5;
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class UnitTestAssertionAnalyzer : DiagnosticAnalyzer
+    {
+        public const string DiagnosticId = "AN0005";
+        private const string Title = "Unit test without assertion";
+        private const string MessageFormat = "Add assertion in test";
+        private const string Description = "Test should contain an assertion";
+        private const string Category = "Usage";
+        private const int MAX_RECURSIVE_CALLS = 5;
 
-		private static readonly List<string> s_AssertTokens = new List<string>()
-		{
-			"Should",
-			"Assert"
-		};
+        private static readonly List<string> s_AssertTokens = new List<string>()
+        {
+            "Should",
+            "Assert"
+        };
 
-		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
-		public override void Initialize(AnalysisContext context)
-		{
-			context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration);
-		}
+        public override void Initialize(AnalysisContext context)
+        {
+            context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration);
+        }
 
-		private static void AnalyzeTestMethodName(SyntaxNodeAnalysisContext context)
-		{
-			var methodDeclarationSyntax = (MethodDeclarationSyntax)context.Node;
+        private static void AnalyzeTestMethodName(SyntaxNodeAnalysisContext context)
+        {
+            var methodDeclarationSyntax = (MethodDeclarationSyntax)context.Node;
 
             // Check if method contains assertion
             if (!methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
@@ -54,24 +54,24 @@ namespace CodeAnalyzer.Analyzers
             context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
         }
 
-		private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
-		{
-			if (resursiveCallCounter > MAX_RECURSIVE_CALLS)
-			{
-				return true; // If the search have treversed more than 5 levels in a method, ignore this method
-			}
+        private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
+        {
+            if (resursiveCallCounter > MAX_RECURSIVE_CALLS)
+            {
+                return true; // If the search have treversed more than 5 levels in a method, ignore this method
+            }
 
-			resursiveCallCounter++;
-			foreach (var statement in methodDeclarationSyntax.Body.Statements)
-			{
-				if (IsAssertionStatement(statement, context, resursiveCallCounter))
-				{
-					return true;
-				}
-			}
+            resursiveCallCounter++;
+            foreach (var statement in methodDeclarationSyntax.Body.Statements)
+            {
+                if (IsAssertionStatement(statement, context, resursiveCallCounter))
+                {
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
         private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
         {
@@ -110,7 +110,7 @@ namespace CodeAnalyzer.Analyzers
                 return true;
             }
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 }

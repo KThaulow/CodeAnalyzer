@@ -8,34 +8,34 @@ using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
-	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class DateTimeKindAnalyzer : DiagnosticAnalyzer
-	{
-		public const string DiagnosticId = "AN0002";
-		private const string Title = "DateTime should be UTC";
-		private const string MessageFormat = "DateTime kind should be UTC";
-		private const string Description = "DateTime kind should be UTC";
-		private const string Category = "Usage";
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class DateTimeKindAnalyzer : DiagnosticAnalyzer
+    {
+        public const string DiagnosticId = "AN0002";
+        private const string Title = "DateTime should be UTC";
+        private const string MessageFormat = "DateTime kind should be UTC";
+        private const string Description = "DateTime kind should be UTC";
+        private const string Category = "Usage";
 
-		private const string SYSTEM_DATETIME = "System.DateTime";
-		private const string DATETIME = "DateTime";
-		private const string NOW = "Now";
-		private const string DATETIMEKIND = "DateTimeKind";
-		private const string UTC = "Utc";
+        private const string SYSTEM_DATETIME = "System.DateTime";
+        private const string DATETIME = "DateTime";
+        private const string NOW = "Now";
+        private const string DATETIMEKIND = "DateTimeKind";
+        private const string UTC = "Utc";
 
-		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
-		public override void Initialize(AnalysisContext context)
-		{
-			context.RegisterSyntaxNodeAction(AnalyzeLocalDeclarationStatement, SyntaxKind.LocalDeclarationStatement);
+        public override void Initialize(AnalysisContext context)
+        {
+            context.RegisterSyntaxNodeAction(AnalyzeLocalDeclarationStatement, SyntaxKind.LocalDeclarationStatement);
 
-			context.RegisterSyntaxNodeAction(AnalyzeArgument, SyntaxKind.Argument);
+            context.RegisterSyntaxNodeAction(AnalyzeArgument, SyntaxKind.Argument);
 
-			context.RegisterCompilationStartAction(startContext =>
-			{
-				INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName(SYSTEM_DATETIME);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName(SYSTEM_DATETIME);
 
                 if (dateTimeSymbol is null)
                 {
@@ -48,21 +48,21 @@ namespace CodeAnalyzer.Analyzers
             });
         }
 
-		private static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
-		{
-			var localDeclaration = (LocalDeclarationStatementSyntax)context.Node;
+        private static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
+        {
+            var localDeclaration = (LocalDeclarationStatementSyntax)context.Node;
 
             foreach (var variable in localDeclaration.Declaration.Variables)
             {
                 var initializer = variable.Initializer;
-                if (initializer is null)
+                if (initializer == null)
                 {
                     return;
                 }
 
-				AnalyzeExpressionSyntax(context, initializer.Value);
-			}
-		}
+                AnalyzeExpressionSyntax(context, initializer.Value);
+            }
+        }
 
         private static void AnalyzeArgument(SyntaxNodeAnalysisContext context)
         {
@@ -70,9 +70,9 @@ namespace CodeAnalyzer.Analyzers
             AnalyzeExpressionSyntax(context, argumentSyntax.Expression);
         }
 
-		private static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol dateTimeSymbol)
-		{
-			var objectCreationSyntax = (ObjectCreationExpressionSyntax)context.Node;
+        private static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol dateTimeSymbol)
+        {
+            var objectCreationSyntax = (ObjectCreationExpressionSyntax)context.Node;
 
             ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreationSyntax, context.CancellationToken);
             if (typeSymbol?.Equals(dateTimeSymbol) != true)

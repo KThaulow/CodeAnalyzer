@@ -8,18 +8,18 @@ using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
-	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class DoubleFloatParseAnalyzer : DiagnosticAnalyzer
-	{
-		public const string DiagnosticId = "AN0003";
-		private const string Title = "Use InvariantCulture when parsing a double/float";
-		private const string MessageFormat = "Use InvariantCulture for double/float parsing";
-		private const string Description = "Use InvariantCulture when parsing a double/float to string";
-		private const string Category = "Usage";
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class DoubleFloatParseAnalyzer : DiagnosticAnalyzer
+    {
+        public const string DiagnosticId = "AN0003";
+        private const string Title = "Use InvariantCulture when parsing a double/float";
+        private const string MessageFormat = "Use InvariantCulture for double/float parsing";
+        private const string Description = "Use InvariantCulture when parsing a double/float to string";
+        private const string Category = "Usage";
 
-		private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
         public override void Initialize(AnalysisContext context)
         {
@@ -33,20 +33,20 @@ namespace CodeAnalyzer.Analyzers
                     floatSymbol
                 };
 
-				if (registeredSymbols.Any())
-				{
-					startContext.RegisterSyntaxNodeAction(
-						nodeContext => AnalyzeInvocationExpressionSyntax(nodeContext, registeredSymbols),
-						SyntaxKind.InvocationExpression);
-				}
-			});
-		}
+                if (registeredSymbols.Any())
+                {
+                    startContext.RegisterSyntaxNodeAction(
+                        nodeContext => AnalyzeInvocationExpressionSyntax(nodeContext, registeredSymbols),
+                        SyntaxKind.InvocationExpression);
+                }
+            });
+        }
 
-		private static void AnalyzeInvocationExpressionSyntax(SyntaxNodeAnalysisContext context, IEnumerable<INamedTypeSymbol> registeredSymbols)
-		{
-			var invocationExpressionSyntax = (InvocationExpressionSyntax)context.Node;
+        private static void AnalyzeInvocationExpressionSyntax(SyntaxNodeAnalysisContext context, IEnumerable<INamedTypeSymbol> registeredSymbols)
+        {
+            var invocationExpressionSyntax = (InvocationExpressionSyntax)context.Node;
 
-			ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
+            ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpressionSyntax, context.CancellationToken);
 
             if (symbol is null)
             {
