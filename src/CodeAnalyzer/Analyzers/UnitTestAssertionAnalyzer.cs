@@ -8,101 +8,109 @@ using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
-	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class UnitTestAssertionAnalyzer : DiagnosticAnalyzer
-	{
-		public const string DiagnosticId = "AN0005";
-		private const string Title = "Unit test without assertion";
-		private const string MessageFormat = "Add assertion in test";
-		private const string Description = "Test should contain an assertion";
-		private const string Category = "Usage";
-		private const int MAX_RECURSIVE_CALLS = 5;
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class UnitTestAssertionAnalyzer : DiagnosticAnalyzer
+    {
+        public const string DiagnosticId = "AN0005";
+        private const string Title = "Unit test without assertion";
+        private const string MessageFormat = "Add assertion in test";
+        private const string Description = "Test should contain an assertion";
+        private const string Category = "Usage";
+        private const int MAX_RECURSIVE_CALLS = 5;
 
-		private static List<string> s_AssertTokens = new List<string>()
-		{
-			"Should",
-			"Assert"
-		};
+        private static readonly List<string> s_AssertTokens = new List<string>()
+        {
+            "Should",
+            "Assert"
+        };
 
-		private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Info, isEnabledByDefault: true, description: Description);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
-		public override void Initialize(AnalysisContext context)
-		{
-			context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration);
-		}
+        public override void Initialize(AnalysisContext context)
+        {
+            context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration);
+        }
 
-		private static void AnalyzeTestMethodName(SyntaxNodeAnalysisContext context)
-		{
-			var methodDeclarationSyntax = (MethodDeclarationSyntax)context.Node;
+        private static void AnalyzeTestMethodName(SyntaxNodeAnalysisContext context)
+        {
+            var methodDeclarationSyntax = (MethodDeclarationSyntax)context.Node;
 
-			// Check if method contains assertion
-			if (methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
-				&& attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
-			{
-				int resursiveCallCounter = 0;
+            // Check if method contains assertion
+            if (!methodDeclarationSyntax.AttributeLists.Any(e => (e is AttributeListSyntax attributeList)
+                && attributeList.Attributes.Any(u => u.Name.TryGetInferredMemberName() == "TestMethod")))
+            {
+                return;
+            }
 
-				if (IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
-				{
-					return;
-				}
+            int resursiveCallCounter = 0;
 
-				context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
-			}
-		}
+            if (IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
+            {
+                return;
+            }
 
-		private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
-		{
-			if (resursiveCallCounter > MAX_RECURSIVE_CALLS)
-			{
-				return true; // If the search have treversed more than 5 levels in a method, ignore this method
-			}
+            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+        }
 
-			resursiveCallCounter++;
-			foreach (var statement in methodDeclarationSyntax.Body.Statements)
-			{
-				if (IsAssertionStatement(statement, context, resursiveCallCounter))
-				{
-					return true;
-				}
-			}
+        private static bool IsAssertionMethod(MethodDeclarationSyntax methodDeclarationSyntax, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
+        {
+            if (resursiveCallCounter > MAX_RECURSIVE_CALLS)
+            {
+                return true; // If the search have treversed more than 5 levels in a method, ignore this method
+            }
 
-			return false;
-		}
+            resursiveCallCounter++;
+            foreach (var statement in methodDeclarationSyntax.Body.Statements)
+            {
+                if (IsAssertionStatement(statement, context, resursiveCallCounter))
+                {
+                    return true;
+                }
+            }
 
-		private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
-		{
-			if (statement is ExpressionStatementSyntax expressionStatementSyntax)
-			{
-				// Check is the expression if an assertion
-				var expressionDescendants = expressionStatementSyntax.Expression.DescendantNodes();
-				if (expressionDescendants.Any(e => e is IdentifierNameSyntax identifierNameSyntax
-				&& s_AssertTokens.Any(i => i == identifierNameSyntax.Identifier.ValueText)))
-				{
-					return true;
-				}
+            return false;
+        }
 
-				// Check if any invoked methods are containing assertions
-				var methodSymbol = context.SemanticModel.GetSymbolInfo(expressionStatementSyntax.Expression, context.CancellationToken).Symbol as IMethodSymbol;
+        private static bool IsAssertionStatement(StatementSyntax statement, SyntaxNodeAnalysisContext context, int resursiveCallCounter)
+        {
+            if (!(statement is ExpressionStatementSyntax expressionStatementSyntax))
+            {
+                return false;
+            }
+            // Check is the expression if an assertion
+            var expressionDescendants = expressionStatementSyntax.Expression.DescendantNodes();
 
-				if (methodSymbol != null)
-				{
-					var syntaxReference = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
-					if (syntaxReference != null)
-					{
-						var declaration = syntaxReference.GetSyntax(context.CancellationToken);
-						if (declaration is MethodDeclarationSyntax methodDeclarationSyntax
-							&& methodDeclarationSyntax.Modifiers.Any(e => e.Kind() == SyntaxKind.PrivateKeyword)
-							&& IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
-						{
-							return true;
-						}
-					}
-				}
-			}
+            if (expressionDescendants.Any(e => e is IdentifierNameSyntax identifierNameSyntax
+                && s_AssertTokens.Any(i => i == identifierNameSyntax.Identifier.ValueText)))
+            {
+                return true;
+            }
 
-			return false;
-		}
-	}
+            // Check if any invoked methods are containing assertions
+            var symbol = context.SemanticModel.GetSymbolInfo(expressionStatementSyntax.Expression, context.CancellationToken).Symbol;
+
+            if (!(symbol is IMethodSymbol methodSymbol))
+            {
+                return false;
+            }
+
+            var syntaxReference = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+            if (syntaxReference is null)
+            {
+                return false;
+            }
+
+            var declaration = syntaxReference.GetSyntax(context.CancellationToken);
+            if (declaration is MethodDeclarationSyntax methodDeclarationSyntax
+                && methodDeclarationSyntax.Modifiers.Any(e => e.Kind() == SyntaxKind.PrivateKeyword)
+                && IsAssertionMethod(methodDeclarationSyntax, context, resursiveCallCounter))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
 }
