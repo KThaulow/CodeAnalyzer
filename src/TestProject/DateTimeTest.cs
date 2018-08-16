@@ -29,7 +29,7 @@ namespace TestProject
 
 			var date3 = DateTime.UtcNow.ToString("yyyy/mm/dd");
 
-			string dateTimeOffset2 = DateTimeOffset.Now.ToString("yyyy/mm/dd");
+			string dateTimeOffset2 = DateTimeOffset.UtcNow.ToString("yyyy/mm/dd");
 
 		}
 
