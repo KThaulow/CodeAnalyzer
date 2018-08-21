@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace CodeAnalyzer.Analyzers
 {
@@ -28,7 +28,16 @@ namespace CodeAnalyzer.Analyzers
         private static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
         {
             var whileStatement = (WhileStatementSyntax)context.Node;
-            CheckStatement(context, whileStatement.Statement);
+
+            if (!(whileStatement.Statement is BlockSyntax))
+            {
+                return;
+            }
+
+            if (!HasCirCuitBreaker(whileStatement.Statement))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+            }
         }
 
         private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
@@ -42,15 +51,23 @@ namespace CodeAnalyzer.Analyzers
                 && !forStatement.SecondSemicolonToken.ContainsDirectives
                 && !forStatement.CloseParenToken.ContainsDirectives)
             {
-                CheckStatement(context, forStatement.Statement);
+                if (!(forStatement.Statement is BlockSyntax))
+                {
+                    return;
+                }
+
+                if (!HasCirCuitBreaker(forStatement.Statement))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+                }
             }
         }
 
-        private static void CheckStatement(SyntaxNodeAnalysisContext context, StatementSyntax statementSyntax)
+        private static bool HasCirCuitBreaker(StatementSyntax statementSyntax)
         {
             if (!(statementSyntax is BlockSyntax blockSyntax))
             {
-                return;
+                return false;
             }
 
             foreach (var statement in blockSyntax.Statements)
@@ -58,11 +75,23 @@ namespace CodeAnalyzer.Analyzers
                 if (statement is BreakStatementSyntax
                     || statement is ReturnStatementSyntax)
                 {
-                    return;
+                    return true;
+                }
+                else if (statement is IfStatementSyntax ifStatementSyntax)
+                {
+                    if (HasCirCuitBreaker(ifStatementSyntax.Statement)
+                        || HasCirCuitBreaker(ifStatementSyntax?.Else?.Statement))
+                    {
+                        return true;
+                    }
+                }
+                else if (HasCirCuitBreaker(statement))
+                {
+                    return true;
                 }
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+            return false;
         }
     }
 }
