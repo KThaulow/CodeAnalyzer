@@ -1,10 +1,9 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TestHelper
 {
@@ -161,7 +160,7 @@ namespace TestHelper
                             expected.Severity, actual.Severity, FormatDiagnostics(analyzer, actual)));
                 }
 
-                if (actual.GetMessage() != expected.Message)
+                if (expected.Message != null && actual.GetMessage() != expected.Message)
                 {
                     Assert.IsTrue(false,
                         string.Format("Expected diagnostic message to be \"{0}\" was \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
