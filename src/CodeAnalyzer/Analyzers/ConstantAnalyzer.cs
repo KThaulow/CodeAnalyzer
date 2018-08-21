@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace CodeAnalyzer.Analyzers
 {
@@ -21,7 +21,7 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzePotentialConstant, SyntaxKind.LocalDeclarationStatement);
+            //context.RegisterSyntaxNodeAction(AnalyzePotentialConstant, SyntaxKind.LocalDeclarationStatement);
         }
 
         private static void AnalyzePotentialConstant(SyntaxNodeAnalysisContext context)
