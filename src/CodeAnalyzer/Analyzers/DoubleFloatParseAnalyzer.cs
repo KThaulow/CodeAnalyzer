@@ -1,10 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
@@ -67,13 +67,30 @@ namespace CodeAnalyzer.Analyzers
                         if (!arguments.Any())
                             return;
 
-                        if (!arguments.Any(e => e.Expression.TryGetInferredMemberName() == "InvariantCulture"))
+                        if (!arguments.Any(e => HasInvariantCulture(e.Expression)))
                         {
                             context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
                         }
                     }
                 }
             }
+        }
+
+        private static bool HasInvariantCulture(ExpressionSyntax expression)
+        {
+            if (expression.TryGetInferredMemberName() == "InvariantCulture")
+            {
+                return true;
+            }
+            else if (expression is MemberAccessExpressionSyntax subExpression)
+            {
+                if (HasInvariantCulture(subExpression.Expression))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

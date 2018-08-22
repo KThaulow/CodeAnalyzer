@@ -32,19 +32,8 @@ namespace TestProject
             string dateTimeOffset2 = DateTimeOffset.UtcNow.ToString("yyyy/mm/dd");
 
 
-            int counter = 0;
-            while (counter > 1)
-            {
-                counter++;
-                if (counter > 100)
-                {
 
-                }
-                else
-                {
-                    break;
-                }
-            }
+
         }
 
         private void MyMethod(DateTime dateTime)

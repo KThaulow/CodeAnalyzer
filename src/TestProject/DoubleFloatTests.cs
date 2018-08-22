@@ -2,26 +2,28 @@
 
 namespace TestProject
 {
-	public class DoubleFloatTests
-	{
-		public void TestMethod()
-		{
-			double parsedDouble = double.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
+    public class DoubleFloatTests
+    {
+        public void TestMethod()
+        {
+            double parsedDouble = double.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
 
-			double parsedDouble2 = double.Parse("1.1");
+            double parsedDouble2 = double.Parse("1.1");
 
 
-			bool didParse = double.TryParse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedDouble3);
+            bool didParse = double.TryParse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedDouble3);
 
-			bool didParse2 = double.TryParse("1.1", out double parsedDouble4);
+            bool didParse2 = double.TryParse("1.1", out double parsedDouble4);
 
-			bool didParse3 = float.TryParse("1.1", out float parsedFloat);
+            bool didParse3 = float.TryParse("1.1", out float parsedFloat);
 
-			float parsed1 = float.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
+            float parsed1 = float.Parse("1.1", NumberStyles.Any, CultureInfo.InvariantCulture);
 
-			float parsed2 = float.Parse("1.1");
+            float parsed2 = float.Parse("1.1");
 
-			bool didParse4 = float.TryParse("1.1", out float parsedFloat1);
-		}
-	}
+            bool didParse4 = float.TryParse("1.1", out float parsedFloat1);
+
+            double.TryParse("1.1", NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture.NumberFormat, out double longitude);
+        }
+    }
 }
