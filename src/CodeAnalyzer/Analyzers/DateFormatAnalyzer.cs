@@ -39,13 +39,15 @@ namespace CodeAnalyzer.Analyzers
                 INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTime");
                 INamedTypeSymbol dateTimeOffsetSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTimeOffset");
 
-                var registeredSymbols = new List<INamedTypeSymbol>()
-                {
-                    dateTimeSymbol,
-                    dateTimeOffsetSymbol
-                };
+                var registeredSymbols = new List<INamedTypeSymbol>();
 
                 if (dateTimeSymbol != null)
+                    registeredSymbols.Add(dateTimeSymbol);
+
+                if (dateTimeOffsetSymbol != null)
+                    registeredSymbols.Add(dateTimeOffsetSymbol);
+
+                if (registeredSymbols.Any())
                 {
                     startContext.RegisterSyntaxNodeAction(
                         nodeContext => AnalyzeInvocationExpressionSyntax(nodeContext, registeredSymbols),
