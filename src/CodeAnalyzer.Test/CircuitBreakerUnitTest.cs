@@ -12,6 +12,7 @@ namespace CodeAnalyzer.Test
     [TestClass]
     public class CircuitBreakerUnitTest : CodeFixVerifier
     {
+        [Ignore] // Cannot handle incrementing and decrementing integers in statement yet
         [TestMethod]
         public void CircuitBreakerAnalyzer_WhileNoBreak_ProposeFix()
         {
@@ -121,7 +122,7 @@ namespace ConsoleApplication1
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8,4)
+                            new DiagnosticResultLocation("Test0.cs", 8,19)
                         }
             };
 
@@ -226,7 +227,7 @@ namespace ConsoleApplication1
 			int i = 0;
 			while(i > 1)
 			{
-				i++
+				i++;
                 if(i > 100)
                 {
                     break;
@@ -238,6 +239,388 @@ namespace ConsoleApplication1
 
             VerifyCSharpDiagnostic(test);
         }
+
+        #region While condition breaker
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanIncrementingBreaker_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(i < 1)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanOrEqualsIncrementingBreaker_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(i <= 1)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanDecrementingBreaker_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(i < 1)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanOrEqualsDecrementingBreaker_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(i <= 1)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterThanDecrementingBreaker_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(i > 1)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterOrEqualsThanDecrementingBreaker_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(i >= 1)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterThanIncrementingBreaker_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(i > 1)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterOrEqualsThanIncrementingBreaker_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(i >= 1)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanIncrementingBreakerLeft_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(1 > i)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanOrEqualsIncrementingBreakerLeft_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(1 >= i)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanDecrementingBreakerLeft_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(1 > i)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanOrEqualsDecrementingBreakerLeft_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 0;
+			while(1 >= i)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterThanDecrementingBreakerLeft_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(1 < i)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterOrEqualsThanDecrementingBreakerLeft_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(1 <= i)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterThanIncrementingBreakerLeft_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(1 < i)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionGreaterOrEqualsThanIncrementingBreakerLeft_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			int i = 10;
+			while(1 <= i)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        #endregion
 
         [TestMethod]
         public void CircuitBreakerAnalyzer_WhileWithNestedBreakElse_Ignore()
@@ -325,7 +708,7 @@ namespace ConsoleApplication1
 	}
 }";
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", "Add circuit breaker to loop", 9, 4);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", "Add circuit breaker to loop", 9, 10);
 
             VerifyCSharpDiagnostic(test, expected);
         }

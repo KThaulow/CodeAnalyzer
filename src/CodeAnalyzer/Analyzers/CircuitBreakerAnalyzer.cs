@@ -33,11 +33,84 @@ namespace CodeAnalyzer.Analyzers
             {
                 return;
             }
-
-            if (!HasCirCuitBreaker(whileStatement.Statement))
+            if (HasConditionCircuitBreaker(whileStatement.Condition, whileStatement.Statement))
             {
-                context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+                return;
             }
+            if (HasStatementCircuitBreaker(whileStatement.Statement))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Rule, whileStatement.Condition.GetLocation()));
+        }
+
+        private static bool HasConditionCircuitBreaker(ExpressionSyntax condition, StatementSyntax statement)
+        {
+            if (condition is BinaryExpressionSyntax binaryExpression)
+            {
+                if (binaryExpression.Kind() == SyntaxKind.LessThanExpression
+                    || binaryExpression.Kind() == SyntaxKind.LessThanOrEqualExpression)
+                {
+                    if (binaryExpression.Left is IdentifierNameSyntax leftIdenfitierSyntax
+                        && HasIncrementingStamentIdentifier(statement, leftIdenfitierSyntax))
+                    {
+                        return true;
+                    }
+                    else if (binaryExpression.Right is IdentifierNameSyntax rightIdentifierSyntax
+                        && HasDecrementingStamentIdentifier(statement, rightIdentifierSyntax))
+                    {
+                        return true;
+                    }
+                }
+                if (binaryExpression.Kind() == SyntaxKind.GreaterThanExpression
+                    || binaryExpression.Kind() == SyntaxKind.GreaterThanOrEqualExpression)
+                {
+                    if (binaryExpression.Left is IdentifierNameSyntax leftIdenfitierSyntax
+                        && HasDecrementingStamentIdentifier(statement, leftIdenfitierSyntax))
+                    {
+                        return true;
+                    }
+                    else if (binaryExpression.Right is IdentifierNameSyntax rightIdentifierSyntax
+                        && HasIncrementingStamentIdentifier(statement, rightIdentifierSyntax))
+                    {
+                        return true;
+                    }
+                }
+
+                if (HasConditionCircuitBreaker(binaryExpression.Left, statement))
+                {
+                    return true;
+                }
+                if (HasConditionCircuitBreaker(binaryExpression.Right, statement))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool HasIncrementingStamentIdentifier(StatementSyntax statement, IdentifierNameSyntax identifierNameSyntax)
+        {
+            IncrementDecrementType requiredChange = IncrementDecrementType.Increment;
+            if (HasChangingIdentifier(statement, identifierNameSyntax, requiredChange))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool HasDecrementingStamentIdentifier(StatementSyntax statement, IdentifierNameSyntax identifierNameSyntax)
+        {
+            IncrementDecrementType requiredChange = IncrementDecrementType.Decrement;
+            if (HasChangingIdentifier(statement, identifierNameSyntax, requiredChange))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
@@ -56,14 +129,14 @@ namespace CodeAnalyzer.Analyzers
                     return;
                 }
 
-                if (!HasCirCuitBreaker(forStatement.Statement))
+                if (!HasStatementCircuitBreaker(forStatement.Statement))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(Rule, context.Node.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Rule, forStatement.Condition.GetLocation()));
                 }
             }
         }
 
-        private static bool HasCirCuitBreaker(StatementSyntax statementSyntax)
+        private static bool HasStatementCircuitBreaker(StatementSyntax statementSyntax)
         {
             if (!(statementSyntax is BlockSyntax blockSyntax))
             {
@@ -79,19 +152,81 @@ namespace CodeAnalyzer.Analyzers
                 }
                 else if (statement is IfStatementSyntax ifStatementSyntax)
                 {
-                    if (HasCirCuitBreaker(ifStatementSyntax.Statement)
-                        || HasCirCuitBreaker(ifStatementSyntax?.Else?.Statement))
+                    if (HasStatementCircuitBreaker(ifStatementSyntax.Statement)
+                        || HasStatementCircuitBreaker(ifStatementSyntax?.Else?.Statement))
                     {
                         return true;
                     }
                 }
-                else if (HasCirCuitBreaker(statement))
+                else if (HasStatementCircuitBreaker(statement))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private enum IncrementDecrementType
+        {
+            Increment,
+            Decrement
+        }
+
+        private static bool HasChangingIdentifier(StatementSyntax statementSyntax, IdentifierNameSyntax identifierNameSyntax, IncrementDecrementType requiredChange)
+        {
+            if (!(statementSyntax is BlockSyntax blockSyntax))
+            {
+                return false;
+            }
+
+            foreach (var statement in blockSyntax.Statements)
+            {
+                if (statement is IfStatementSyntax ifStatementSyntax)
+                {
+                    if (HasChangingIdentifier(ifStatementSyntax.Statement, identifierNameSyntax, requiredChange))
+                    {
+                        return true;
+                    }
+                    if (HasChangingIdentifier(ifStatementSyntax?.Else?.Statement, identifierNameSyntax, requiredChange))
+                    {
+                        return true;
+                    }
+                }
+                else if (statement is ExpressionStatementSyntax expressionStatementSyntax)
+                {
+                    if (expressionStatementSyntax.Expression is PostfixUnaryExpressionSyntax postExpressionSyntax)
+                    {
+                        if (postExpressionSyntax.Operand is IdentifierNameSyntax statementIdentifierNameSyntax
+                            && statementIdentifierNameSyntax.Identifier.Text == identifierNameSyntax.Identifier.Text
+                            && MatchesIntegerChange(requiredChange, postExpressionSyntax.OperatorToken.Kind()))
+                        {
+                            return true;
+                        }
+                    }
+                    if (expressionStatementSyntax.Expression is PrefixUnaryExpressionSyntax prefixExpressionSyntax)
+                    {
+                        if (prefixExpressionSyntax.Operand is IdentifierNameSyntax statementIdentifierNameSyntax
+                            && statementIdentifierNameSyntax.Identifier.Text == identifierNameSyntax.Identifier.Text
+                            && MatchesIntegerChange(requiredChange, prefixExpressionSyntax.OperatorToken.Kind()))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool MatchesIntegerChange(IncrementDecrementType requiredChange, SyntaxKind stamentSyntaxKind)
+        {
+            if (requiredChange == IncrementDecrementType.Decrement)
+            {
+                return stamentSyntaxKind == SyntaxKind.MinusMinusToken;
+            }
+
+            return stamentSyntaxKind == SyntaxKind.PlusPlusToken;
         }
     }
 }
