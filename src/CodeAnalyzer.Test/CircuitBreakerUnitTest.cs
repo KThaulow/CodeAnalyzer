@@ -620,6 +620,55 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanIncrementingAndOperator_Ignore()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+            bool run = true;
+			int i = 1;
+			while(i < 10 && run)
+			{
+				i++;
+			}
+		}
+	}
+}";
+
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ConditionLessThanDecrementingAndOperator_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+            bool run = true;
+			int i = 1;
+			while(i < 10 && run)
+			{
+				i--;
+			}
+		}
+	}
+}";
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 10, 10);
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
         #endregion
 
         [TestMethod]
