@@ -1,21 +1,21 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
-	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class DateAndTimeCultureAnalyzer : DiagnosticAnalyzer
-	{
-		public const string DiagnosticId = "AN0007";
-		private const string Title = "InvariantCulture for date/time";
-		private const string MessageFormat = "Use InvariantCulture for printing date/time";
-		private const string Description = "Use InvariantCulture when calling ToString() on DateTime";
-		private const string Category = "Usage";
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    public class DateAndTimeCultureAnalyzer : DiagnosticAnalyzer
+    {
+        public const string DiagnosticId = "AN0007";
+        private const string Title = "InvariantCulture for date/time";
+        private const string MessageFormat = "Use InvariantCulture for printing date/time";
+        private const string Description = "Use InvariantCulture when calling ToString() on DateTime";
+        private const string Category = "Formatting";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 

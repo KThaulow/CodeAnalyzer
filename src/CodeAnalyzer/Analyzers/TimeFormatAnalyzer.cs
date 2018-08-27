@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace CodeAnalyzer.Analyzers
 {
@@ -13,7 +13,7 @@ namespace CodeAnalyzer.Analyzers
         private const string Title = "24 hour format for times";
         private const string MessageFormat = "Use 24 hour time format";
         private const string Description = "Use 24 hour format instead of 12 hour format";
-        private const string Category = "Usage";
+        private const string Category = "Formatting";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 

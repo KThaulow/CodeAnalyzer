@@ -16,7 +16,7 @@ namespace CodeAnalyzer.Analyzers
         private const string Title = "Abnormal date formatting";
         private const string MessageFormat = "Use (MM) for formatting months instead of (mm)";
         private const string Description = "Use (MM) for formatting months instead of (mm)";
-        private const string Category = "Usage";
+        private const string Category = "Formatting";
 
         private static readonly List<Regex> s_AbnormalDatePatterns = new List<Regex>()
         {

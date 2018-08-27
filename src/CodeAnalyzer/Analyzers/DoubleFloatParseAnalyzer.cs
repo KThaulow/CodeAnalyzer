@@ -15,7 +15,7 @@ namespace CodeAnalyzer.Analyzers
         private const string Title = "Use InvariantCulture when parsing a double/float";
         private const string MessageFormat = "Use InvariantCulture for double/float parsing";
         private const string Description = "Use InvariantCulture when parsing a double/float to string";
-        private const string Category = "Usage";
+        private const string Category = "Formatting";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
