@@ -11,5 +11,5 @@
 | AN0005 | [Add assertion in test](/docs/AN0000.md) | Usage |
 | AN0006 | [Use unit test method naming convention](/docs/AN0000.md) | Style |
 | AN0007 | [Use InvariantCulture for printing date/time](/docs/AN0000.md) | Formatting |
-| AN0008 | [Use (MM) for formatting months instead of (mm)](/docs/AN0000.md) | Usage |
+| AN0008 | [Use (MM) for formatting months instead of (mm)](/docs/AN0000.md) | Formatting |
 | AN0009 | [Fix TimeSpan formatting](/docs/AN0009.md) | Usage |
