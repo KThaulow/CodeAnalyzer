@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Text.RegularExpressions;
 using CodeAnalyzer.Entities;
 using Microsoft.CodeAnalysis;
@@ -13,35 +14,32 @@ namespace CodeAnalyzer.Analyzers
     public class TimeSpanFormatAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0009";
-        private const string Title = "Abnormal timspan formatting";
-        private const string MessageFormat = "Check timespan formatting";
-        private const string Description = "Check timespan formatting";
-        private const string Category = "Usage";
-
-        private const string MessageYear = "Year not valid in timespan formatting";
-        private const string MessageMonthSuggestion = "Month not valid in timespan formatting. Did you mean 'm' (minutes)?";
-        private const string MessageMonth = "Month not valid in timespan formatting";
+        public const string Title = "Invalid timespan formatting";
+        private const string MessageFormat = "Fix timespan formatting";
+        public const string Description = "Fix timespan formatting";
+        public const string Category = "Usage";
 
         private static DiagnosticDescriptor s_DefaultRule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-        private static DiagnosticDescriptor s_YearRule = new DiagnosticDescriptor(DiagnosticId, Title, MessageYear, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-        private static DiagnosticDescriptor s_MonthSuggestionRule = new DiagnosticDescriptor(DiagnosticId, Title, MessageMonthSuggestion, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-        private static DiagnosticDescriptor s_MonthRule = new DiagnosticDescriptor(DiagnosticId, Title, MessageMonth, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-
 
         private static readonly List<TimeSpanPattern> s_ForbiddenTimeSpanPatterns = new List<TimeSpanPattern>()
         {
-            new TimeSpanPattern(new Regex("y"), s_YearRule),
-            new TimeSpanPattern(new Regex("Y"), s_YearRule),
-            new TimeSpanPattern(new Regex("yy"), s_YearRule),
-            new TimeSpanPattern(new Regex("yyy"), s_YearRule),
-            new TimeSpanPattern(new Regex("yyyy"), s_YearRule),
-            new TimeSpanPattern(new Regex("M"), s_MonthSuggestionRule),
-            new TimeSpanPattern(new Regex("MM"), s_MonthSuggestionRule),
-            new TimeSpanPattern(new Regex("MMM"), s_MonthRule),
-            new TimeSpanPattern(new Regex("MMMM"), s_MonthRule)
+            new TimeSpanPattern(new Regex("y"), "Year not valid in timespan formatting"),
+            new TimeSpanPattern(new Regex("Y"), "Year not valid in timespan formatting"),
+            new TimeSpanPattern(new Regex("MMMM"), "Month not valid in timespan formatting"),
+            new TimeSpanPattern(new Regex("MMM"), "Month not valid in timespan formatting"),
+            new TimeSpanPattern(new Regex("M"), "Month not valid in timespan formatting. Did you mean 'm' (minutes)?"),
+            new TimeSpanPattern(new Regex("HH"), "'HH' not valid in timespan formatting. Did you mean 'hh' (hours)?"),
+            new TimeSpanPattern(new Regex("DD"), "'DD' not valid in timespan formatting. Did you mean 'dd' (days)?"),
+            new TimeSpanPattern(new Regex("D"), "'D' not valid in timespan formatting. Did you mean 'dd' (days)?"),
+            new TimeSpanPattern(new Regex("^d$"), "'d' alone doesn't work, use %d or in a pattern @\"d\\:h\""),
+            new TimeSpanPattern(new Regex("^h$"), "'h' alone doesn't work, use %h or in a pattern @\"h\\:m\""),
+            new TimeSpanPattern(new Regex("^m$"), "'m' alone doesn't work, use %m or in a pattern @\"m\\:s\""),
+            new TimeSpanPattern(new Regex("^s$"), "'s' alone doesn't work, use %s or in a pattern @\"s\\:f\""),
+            new TimeSpanPattern(new Regex("^f$"), "'f' alone doesn't work, use %f or in a pattern @\"f\\:ff\""),
+            new TimeSpanPattern(new Regex("^F$"), "'F' alone doesn't work, use %f or in a pattern @\"F\\:ff\"")
         };
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(s_DefaultRule, s_YearRule, s_MonthSuggestionRule, s_MonthRule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(s_ForbiddenTimeSpanPatterns.Select(e => e.Rule).ToArray()); } }
 
         public override void Initialize(AnalysisContext context)
         {
@@ -89,6 +87,7 @@ namespace CodeAnalyzer.Analyzers
                                     if (pattern.Pattern.IsMatch(literalExpressionSyntax.Token.ValueText))
                                     {
                                         context.ReportDiagnostic(Diagnostic.Create(pattern.Rule, context.Node.GetLocation()));
+                                        return;
                                     }
                                 }
                             }
