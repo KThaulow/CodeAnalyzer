@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class DoubleFloatParseAnalyzer : DiagnosticAnalyzer
+    public class DoubleFloatParseAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0003";
         private const string Title = "Use InvariantCulture when parsing a double/float";
@@ -23,6 +23,8 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+
             context.RegisterCompilationStartAction(startContext =>
             {
                 INamedTypeSymbol doubleSymbol = startContext.Compilation.GetTypeByMetadataName("System.Double");

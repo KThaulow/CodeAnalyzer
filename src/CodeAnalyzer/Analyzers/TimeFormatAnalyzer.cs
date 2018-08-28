@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class TimeFormatAnalyzer : DiagnosticAnalyzer
+    public class TimeFormatAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0004";
         private const string Title = "24 hour format for times";
@@ -21,6 +21,8 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+
             context.RegisterCompilationStartAction(startContext =>
             {
                 INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTime");

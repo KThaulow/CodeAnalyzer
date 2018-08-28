@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class DateFormatAnalyzer : DiagnosticAnalyzer
+    public class DateFormatAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0008";
         private const string Title = "Abnormal date formatting";
@@ -34,6 +34,8 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+
             context.RegisterCompilationStartAction(startContext =>
             {
                 INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTime");

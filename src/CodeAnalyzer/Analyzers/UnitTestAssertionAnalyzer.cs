@@ -1,15 +1,15 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class UnitTestAssertionAnalyzer : DiagnosticAnalyzer
+    public class UnitTestAssertionAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0005";
         private const string Title = "Unit test without assertion";
@@ -30,6 +30,8 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+
             context.RegisterSyntaxNodeAction(AnalyzeTestMethodName, SyntaxKind.MethodDeclaration);
         }
 

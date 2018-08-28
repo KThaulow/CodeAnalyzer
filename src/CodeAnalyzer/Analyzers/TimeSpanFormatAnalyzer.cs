@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class TimeSpanFormatAnalyzer : DiagnosticAnalyzer
+    public class TimeSpanFormatAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0009";
         public const string Title = "Invalid TimeSpan formatting";
@@ -43,6 +43,8 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+
             context.RegisterCompilationStartAction(startContext =>
             {
                 INamedTypeSymbol timeSpanSymbol = startContext.Compilation.GetTypeByMetadataName("System.TimeSpan");

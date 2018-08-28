@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class CircuitBreakerAnalyzer : DiagnosticAnalyzer
+    public class CircuitBreakerAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0001";
         private const string Title = "Circuit breaker in loop";
@@ -21,6 +21,9 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+            context.EnableConcurrentExecution();
+
             context.RegisterSyntaxNodeAction(AnalyzeWhileStatement, SyntaxKind.WhileStatement);
             context.RegisterSyntaxNodeAction(AnalyzeForStatement, SyntaxKind.ForStatement);
         }
@@ -42,7 +45,7 @@ namespace CodeAnalyzer.Analyzers
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Rule, whileStatement.Condition.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(Rule, whileStatement.WhileKeyword.GetLocation()));
         }
 
         private static bool HasConditionCircuitBreaker(ExpressionSyntax condition, StatementSyntax statement)
@@ -131,7 +134,7 @@ namespace CodeAnalyzer.Analyzers
 
                 if (!HasStatementCircuitBreaker(forStatement.Statement))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(Rule, forStatement.Condition.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Rule, forStatement.ForKeyword.GetLocation()));
                 }
             }
         }

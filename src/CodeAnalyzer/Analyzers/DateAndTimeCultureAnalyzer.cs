@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class DateAndTimeCultureAnalyzer : DiagnosticAnalyzer
+    public class DateAndTimeCultureAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0007";
         private const string Title = "InvariantCulture for date/time";
@@ -23,6 +23,8 @@ namespace CodeAnalyzer.Analyzers
 
         public override void Initialize(AnalysisContext context)
         {
+            base.Initialize(context);
+
             context.RegisterCompilationStartAction(startContext =>
             {
                 INamedTypeSymbol dateTimeSymbol = startContext.Compilation.GetTypeByMetadataName("System.DateTime");

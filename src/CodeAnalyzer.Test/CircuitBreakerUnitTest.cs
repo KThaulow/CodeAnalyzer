@@ -12,7 +12,6 @@ namespace CodeAnalyzer.Test
     [TestClass]
     public class CircuitBreakerUnitTest : CodeFixVerifier
     {
-        [Ignore] // Cannot handle incrementing and decrementing integers in statement yet
         [TestMethod]
         public void CircuitBreakerAnalyzer_WhileNoBreak_ProposeFix()
         {
@@ -33,18 +32,7 @@ namespace ConsoleApplication1
 	}
 }";
 
-            var expected = new DiagnosticResult
-            {
-                Id = "AN0001",
-                Message = String.Format("Add circuit breaker to loop"),
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 9,4)
-                        }
-            };
-
-            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
@@ -122,7 +110,7 @@ namespace ConsoleApplication1
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8,19)
+                            new DiagnosticResultLocation("Test0.cs", 8,4)
                         }
             };
 
@@ -170,6 +158,28 @@ namespace ConsoleApplication1
 }";
 
             VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_ForWithoutConditionNoBreak_ProposeFix()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+	class TypeName
+	{   
+		static void Main(string[] args)
+		{
+			for(;;)
+			{
+				int o = 1;
+			}
+		}
+	}
+}";
+
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", "Add circuit breaker to loop", 8, 4);
+            VerifyCSharpDiagnostic(test, expected);
         }
 
         [TestMethod]
@@ -306,7 +316,7 @@ namespace ConsoleApplication1
 }";
 
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -331,7 +341,7 @@ namespace ConsoleApplication1
 }";
 
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -401,7 +411,7 @@ namespace ConsoleApplication1
 }";
 
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -426,7 +436,7 @@ namespace ConsoleApplication1
 	}
 }";
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -495,7 +505,7 @@ namespace ConsoleApplication1
 }";
 
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -520,7 +530,7 @@ namespace ConsoleApplication1
 }";
 
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -590,7 +600,7 @@ namespace ConsoleApplication1
 }";
 
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -615,7 +625,7 @@ namespace ConsoleApplication1
 	}
 }";
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -664,7 +674,7 @@ namespace ConsoleApplication1
 	}
 }";
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 10, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", 10, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
@@ -757,7 +767,7 @@ namespace ConsoleApplication1
 	}
 }";
 
-            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", "Add circuit breaker to loop", 9, 10);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0001", "Add circuit breaker to loop", 9, 4);
 
             VerifyCSharpDiagnostic(test, expected);
         }
