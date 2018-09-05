@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Threading;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace CodeAnalyzer
 {
@@ -36,6 +36,24 @@ namespace CodeAnalyzer
             return semanticModel
                 .GetSymbolInfo(attribute, cancellationToken)
                 .Symbol;
+        }
+
+        public static IMethodSymbol GetExtensionMethodSymbol(
+           this SemanticModel semanticModel,
+           ExpressionSyntax expression)
+        {
+            if (GetSymbol(semanticModel, expression) is IMethodSymbol methodSymbol
+                && methodSymbol.IsExtensionMethod)
+            {
+                IMethodSymbol reducedFrom = methodSymbol.ReducedFrom;
+
+                if (reducedFrom != null)
+                    return reducedFrom;
+
+                return methodSymbol;
+            }
+
+            return null;
         }
 
         public static bool TryGetNameParts(this ExpressionSyntax expression, out IList<string> parts)
