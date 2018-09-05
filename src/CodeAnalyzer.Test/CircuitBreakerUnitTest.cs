@@ -772,6 +772,22 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        [TestMethod]
+        public void CircuitBreakerAnalyzer_WhileBreakInIf_Ignore()
+        {
+            var methodBody = @"
+			int i = 0;
+			while(i > 1)
+			{
+				i++
+                if(i > 100)
+                    break;
+			}";
+            var code = CodeTestHelper.GetCodeInMainMethod("namespace ConsoleApplication1", methodBody);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {

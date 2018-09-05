@@ -141,6 +141,12 @@ namespace CodeAnalyzer.Analyzers
 
         private static bool HasStatementCircuitBreaker(StatementSyntax statementSyntax)
         {
+            if (statementSyntax is BreakStatementSyntax
+                    || statementSyntax is ReturnStatementSyntax)
+            {
+                return true; // Doesn't have a block but a single break/return statement
+            }
+
             if (!(statementSyntax is BlockSyntax blockSyntax))
             {
                 return false;
