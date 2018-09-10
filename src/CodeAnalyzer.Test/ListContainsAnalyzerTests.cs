@@ -14,8 +14,10 @@ namespace CodeAnalyzer.Test
         public void ListContainsAnalyzer_AnyCouldBeContains_ProposeFix()
         {
             var namespaces = @"
-    using System.Collections.Generic;
-    using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
     ";
 
             var methodBody = @"
@@ -25,7 +27,9 @@ namespace CodeAnalyzer.Test
 
             var code = CodeTestHelper.GetCodeInMainMethod(namespaces, methodBody);
 
-            VerifyCSharpDiagnostic(code);
+            var expected = CodeTestHelper.CreateDiagnosticResult("AN0010", 10, 15);
+
+            VerifyCSharpDiagnostic(code, expected);
         }
 
 

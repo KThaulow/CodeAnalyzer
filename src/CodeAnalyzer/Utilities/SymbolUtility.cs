@@ -49,7 +49,7 @@ namespace CodeAnalyzer.Utilities
             if (containingType == null)
                 return false;
 
-            if (containingType.Equals(MetaDataNames.System_Linq_Enumerable))
+            if (MetaDataNames.System_Linq_Enumerable.Equals(containingType))
             {
                 ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
 
@@ -62,7 +62,7 @@ namespace CodeAnalyzer.Utilities
 
         public static bool IsPredicateFunc(ISymbol symbol, ITypeSymbol parameter)
         {
-            if (!symbol.Equals(MetaDataNames.System_Func_T2))
+            if (!MetaDataNames.System_Func_T2.Equals(symbol))
                 return false;
 
             ImmutableArray<ITypeSymbol> typeArguments = ((INamedTypeSymbol)symbol).TypeArguments;

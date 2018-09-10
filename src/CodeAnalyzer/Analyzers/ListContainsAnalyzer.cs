@@ -11,9 +11,9 @@ namespace CodeAnalyzer.Analyzers
     public class ListContainsAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0010";
-        private const string Title = "Use Contains instead of Linq";
-        private const string MessageFormat = "Use Contains instead of Linq";
-        private const string Description = "Use Contains instead of Linq";
+        private const string Title = "Use Contains instead of Any";
+        private const string MessageFormat = "Use Contains instead of Any";
+        private const string Description = "Use Contains instead of Any";
         private const string Category = "Usage";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
@@ -43,7 +43,29 @@ namespace CodeAnalyzer.Analyzers
             if (!SymbolUtility.IsLinqIEnumerableWithPredicate(methodSymbol, "Any"))
                 return;
 
-            context.ReportDiagnostic(Diagnostic.Create(Rule, invocationExpression.GetLocation()));
+            if (invocationExpression.ArgumentList != null)
+            {
+                foreach (var argument in invocationExpression.ArgumentList.Arguments)
+                {
+                    // If simple lambda and the left side of a binary expression is an identifier, use contains
+                    if (argument.Expression is SimpleLambdaExpressionSyntax simpleLambdaExpression
+                        && simpleLambdaExpression.Body is BinaryExpressionSyntax binaryExpression)
+                    {
+                        var parameter = simpleLambdaExpression.Parameter.Identifier;
+
+                        if (binaryExpression.Left is IdentifierNameSyntax leftIdentifier
+                            && leftIdentifier.Identifier.ValueText == parameter.ValueText)
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(Rule, argument.GetLocation()));
+                        }
+                        else if (binaryExpression.Right is IdentifierNameSyntax rightIdentifier
+                            && rightIdentifier.Identifier.ValueText == parameter.ValueText)
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(Rule, argument.GetLocation()));
+                        }
+                    }
+                }
+            }
         }
     }
 }

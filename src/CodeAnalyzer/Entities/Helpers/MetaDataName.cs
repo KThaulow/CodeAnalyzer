@@ -41,8 +41,11 @@ namespace CodeAnalyzer.Entities.Helpers
 
             INamespaceSymbol symbolContainingNamespace = symbol.ContainingNamespace;
 
-            foreach (var containingNameSpace in ContainingNamespaces)
+            // Traverse from leaf to root in namespaces
+            for (int nameSpaceIndex = ContainingNamespaces.Length - 1; nameSpaceIndex >= 0; nameSpaceIndex--)
             {
+                var containingNameSpace = ContainingNamespaces[nameSpaceIndex];
+
                 if (symbolContainingNamespace?.IsGlobalNamespace != false)
                     return false;
 

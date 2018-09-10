@@ -9,14 +9,6 @@ namespace TestProject
         {
             var timeFormat = new TimeFormatTests();
             timeFormat.Test();
-
-            var list = new List<string>();
-            var result = list.Any(e => e == "test");
-
-            if (list.Any(e => e == "test"))
-            {
-                ;
-            }
         }
     }
 }
