@@ -25,7 +25,25 @@ using System.Text;
             var result = list.Any(e => e == ""test"");
             ";
 
-            var code = CodeTestHelper.GetCodeInMainMethod(namespaces, methodBody);
+            //var code = CodeTestHelper.GetCodeInMainMethod(namespaces, methodBody);
+
+            var code = @"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace TestProject
+{
+    class LinqTests
+    {
+        public void TestMethod()
+        {
+            var list = new List<string>();
+            var result1 = list.Any(e => e == ""test"");
+        }
+    }
+}
+";
 
             var expected = CodeTestHelper.CreateDiagnosticResult("AN0010", 10, 15);
 

@@ -1,11 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace TestHelper
 {
@@ -17,8 +18,23 @@ namespace TestHelper
     {
         private static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
         private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
+        private static readonly MetadataReference LinqExpressionsReference = MetadataReference.CreateFromFile(typeof(Expression).Assembly.Location);
         private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
         private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
+        private static readonly MetadataReference CollectionsReference = MetadataReference.CreateFromFile("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\System.Collections.dll");
+        private static readonly MetadataReference CollectionsImmutableReference = MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location);
+
+        //private static readonly MetadataReference coreReference = MetadataReference.CreateFromFile("System.Core.dll");
+        //private static readonly MetadataReference linqReference = MetadataReference.CreateFromFile("System.Linq.dll");
+        //private static readonly MetadataReference linqExpressionsReference = MetadataReference.CreateFromFile("System.Linq.Expressions.dll");
+        //private static readonly MetadataReference serializationFormattersReference = MetadataReference.CreateFromFile("System.Runtime.Serialization.Formatters.dll");
+        //private static readonly MetadataReference runtimeReference = MetadataReference.CreateFromFile("System.Runtime.dll");
+        //private static readonly MetadataReference collectionsReference = MetadataReference.CreateFromFile("System.Collections.dll");
+        //private static readonly MetadataReference collectionsImmutableReference = MetadataReference.CreateFromFile("System.Collections.Immutable.dll");
+        //private static readonly MetadataReference regularExpressionsReference = MetadataReference.CreateFromFile("System.Text.RegularExpressions.dll");
+        //private static readonly MetadataReference codeAnalysisReference = MetadataReference.CreateFromFile("Microsoft.CodeAnalysis.dll");
+        //private static readonly MetadataReference codeAnalysisCSharpReference = MetadataReference.CreateFromFile("Microsoft.CodeAnalysis.CSharp.dll");
+
 
         internal static string DefaultFilePathPrefix = "Test";
         internal static string CSharpDefaultFileExt = "cs";
@@ -26,7 +42,6 @@ namespace TestHelper
         internal static string TestProjectName = "TestProject";
 
         #region  Get Diagnostics
-
         /// <summary>
         /// Given classes in the form of strings, their language, and an IDiagnosticAnalyzer to apply to it, return the diagnostics found in the string after converting it to a document.
         /// </summary>
@@ -152,7 +167,10 @@ namespace TestHelper
                 .AddMetadataReference(projectId, CorlibReference)
                 .AddMetadataReference(projectId, SystemCoreReference)
                 .AddMetadataReference(projectId, CSharpSymbolsReference)
-                .AddMetadataReference(projectId, CodeAnalysisReference);
+                .AddMetadataReference(projectId, CodeAnalysisReference)
+                .AddMetadataReference(projectId, LinqExpressionsReference)
+                .AddMetadataReference(projectId, CollectionsReference)
+                .AddMetadataReference(projectId, CollectionsImmutableReference);
 
             int count = 0;
             foreach (var source in sources)
@@ -167,4 +185,3 @@ namespace TestHelper
         #endregion
     }
 }
-

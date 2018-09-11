@@ -34,8 +34,11 @@ namespace CodeAnalyzer.Analyzers
             if (invocationExpression is null)
                 return;
 
-            SemanticModel semanticModel = context.SemanticModel;
-            IMethodSymbol methodSymbol = semanticModel.GetExtensionMethodSymbol(invocationExpression);
+            var some = context.SemanticModel.GetSymbolInfo(invocationExpression);
+
+            IMethodSymbol methodSymbol = context.SemanticModel.GetExtensionMethodSymbol(invocationExpression);
+
+            ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpression, context.CancellationToken);
 
             if (methodSymbol is null)
                 return;
@@ -47,21 +50,24 @@ namespace CodeAnalyzer.Analyzers
             {
                 foreach (var argument in invocationExpression.ArgumentList.Arguments)
                 {
-                    // If simple lambda and the left side of a binary expression is an identifier, use contains
+                    // If simple lambda and the left side of a binary expression with == token is an identifier, use contains
                     if (argument.Expression is SimpleLambdaExpressionSyntax simpleLambdaExpression
                         && simpleLambdaExpression.Body is BinaryExpressionSyntax binaryExpression)
                     {
-                        var parameter = simpleLambdaExpression.Parameter.Identifier;
+                        if (binaryExpression.OperatorToken.Kind() == SyntaxKind.EqualsEqualsToken)
+                        {
+                            var parameter = simpleLambdaExpression.Parameter.Identifier;
 
-                        if (binaryExpression.Left is IdentifierNameSyntax leftIdentifier
-                            && leftIdentifier.Identifier.ValueText == parameter.ValueText)
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(Rule, argument.GetLocation()));
-                        }
-                        else if (binaryExpression.Right is IdentifierNameSyntax rightIdentifier
-                            && rightIdentifier.Identifier.ValueText == parameter.ValueText)
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(Rule, argument.GetLocation()));
+                            if (binaryExpression.Left is IdentifierNameSyntax leftIdentifier
+                                && leftIdentifier.Identifier.ValueText == parameter.ValueText)
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(Rule, argument.GetLocation()));
+                            }
+                            else if (binaryExpression.Right is IdentifierNameSyntax rightIdentifier
+                                && rightIdentifier.Identifier.ValueText == parameter.ValueText)
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(Rule, argument.GetLocation()));
+                            }
                         }
                     }
                 }
