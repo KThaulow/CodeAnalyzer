@@ -13,3 +13,4 @@
 | AN0007 | [Use InvariantCulture for printing date/time](/docs/AN0000.md) | Formatting |
 | AN0008 | [Use (MM) for formatting months instead of (mm)](/docs/AN0000.md) | Formatting |
 | AN0009 | [Fix TimeSpan formatting](/docs/AN0009.md) | Formatting |
+| AN0010 | [Use Contains instead of Any](/docs/AN0010.md) | Usage |
