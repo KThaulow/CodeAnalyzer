@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace CodeAnalyzer.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ListContainsAnalyzer : BaseDiagnosticAnalyzer
+    public class CollectionContainsAnalyzer : BaseDiagnosticAnalyzer
     {
         public const string DiagnosticId = "AN0010";
         private const string Title = "Use Contains instead of Any";
@@ -34,11 +34,7 @@ namespace CodeAnalyzer.Analyzers
             if (invocationExpression is null)
                 return;
 
-            var some = context.SemanticModel.GetSymbolInfo(invocationExpression);
-
             IMethodSymbol methodSymbol = context.SemanticModel.GetExtensionMethodSymbol(invocationExpression);
-
-            ISymbol symbol = context.SemanticModel.GetSymbol(invocationExpression, context.CancellationToken);
 
             if (methodSymbol is null)
                 return;

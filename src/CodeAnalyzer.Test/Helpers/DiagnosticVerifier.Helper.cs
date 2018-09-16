@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Linq.Expressions;
+using CodeAnalyzer.Test.Helpers;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
@@ -16,13 +15,27 @@ namespace TestHelper
     /// </summary>
     public abstract partial class DiagnosticVerifier
     {
-        private static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-        private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
-        private static readonly MetadataReference LinqExpressionsReference = MetadataReference.CreateFromFile(typeof(Expression).Assembly.Location);
-        private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
-        private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
-        private static readonly MetadataReference CollectionsReference = MetadataReference.CreateFromFile("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\System.Collections.dll");
-        private static readonly MetadataReference CollectionsImmutableReference = MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location);
+        private static readonly MetadataReference CorLibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+        private static readonly MetadataReference SystemCoreReference = MetaDataReferenceHelper.GetAssemblyReference("System.Core.dll");
+        private static readonly MetadataReference LinqReference = MetaDataReferenceHelper.GetAssemblyReference("System.Linq.dll");
+        private static readonly MetadataReference LinqExpressionsReference = MetaDataReferenceHelper.GetAssemblyReference("System.Linq.Expressions.dll");
+        private static readonly MetadataReference SerializationReference = MetaDataReferenceHelper.GetAssemblyReference("System.Runtime.Serialization.Formatters.dll");
+        private static readonly MetadataReference RuntimeReference = MetaDataReferenceHelper.GetAssemblyReference("System.Runtime.dll");
+        private static readonly MetadataReference CollectionsReference = MetaDataReferenceHelper.GetAssemblyReference("System.Collections.dll");
+        private static readonly MetadataReference CollectionImmutableReference = MetaDataReferenceHelper.GetAssemblyReference("System.Collections.Immutable.dll");
+        private static readonly MetadataReference RegExReference = MetaDataReferenceHelper.GetAssemblyReference("System.Text.RegularExpressions.dll");
+        private static readonly MetadataReference CodeAnalysisReference = MetaDataReferenceHelper.GetAssemblyReference("Microsoft.CodeAnalysis.dll");
+        private static readonly MetadataReference CSharpSymbolsReference = MetaDataReferenceHelper.GetAssemblyReference("Microsoft.CodeAnalysis.CSharp.dll");
+
+        // = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+        //private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
+        //= MetadataReference.CreateFromFile(typeof(Expression).Assembly.Location);
+        //private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
+        //private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
+        ////private static readonly MetadataReference CollectionsReference = MetadataReference.CreateFromFile("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\System.Collections.dll");
+        //private static readonly MetadataReference CollectionsReference = MetadataReference.CreateFromFile(typeof(List<string>).Assembly.Location);
+        //private static readonly MetadataReference CollectionsImmutableReference = MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location);
+        //private static readonly MetadataReference SystemReference = MetadataReference.CreateFromFile("C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\System.dll");
 
         //private static readonly MetadataReference coreReference = MetadataReference.CreateFromFile("System.Core.dll");
         //private static readonly MetadataReference linqReference = MetadataReference.CreateFromFile("System.Linq.dll");
@@ -162,15 +175,40 @@ namespace TestHelper
             var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
             var solution = new AdhocWorkspace()
-                .CurrentSolution
-                .AddProject(projectId, TestProjectName, TestProjectName, language)
-                .AddMetadataReference(projectId, CorlibReference)
-                .AddMetadataReference(projectId, SystemCoreReference)
-                .AddMetadataReference(projectId, CSharpSymbolsReference)
-                .AddMetadataReference(projectId, CodeAnalysisReference)
-                .AddMetadataReference(projectId, LinqExpressionsReference)
-                .AddMetadataReference(projectId, CollectionsReference)
-                .AddMetadataReference(projectId, CollectionsImmutableReference);
+            .CurrentSolution
+            .AddProject(projectId, TestProjectName, TestProjectName, language)
+            .AddMetadataReference(projectId, CorLibReference)
+            .AddMetadataReference(projectId, SystemCoreReference)
+            .AddMetadataReference(projectId, LinqReference)
+            .AddMetadataReference(projectId, LinqExpressionsReference)
+            .AddMetadataReference(projectId, SerializationReference)
+            .AddMetadataReference(projectId, RuntimeReference)
+            .AddMetadataReference(projectId, CollectionsReference)
+            .AddMetadataReference(projectId, CollectionImmutableReference)
+            .AddMetadataReference(projectId, RegExReference)
+            .AddMetadataReference(projectId, CodeAnalysisReference)
+            .AddMetadataReference(projectId, CSharpSymbolsReference);
+
+
+            //var files = Directory.EnumerateFiles(@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\");
+
+            //foreach (var file in files)
+            //{
+            //    if (!file.Contains("System.Linq.dll"))
+            //    {
+            //        if (file.Contains("Linq"))
+            //        {
+            //            continue;
+            //        }
+            //    }
+            //    //if (file.Contains("System.Collections.dll"))
+            //    //{
+            //    //    continue;
+            //    //}
+
+            //    var metaDataReference = MetadataReference.CreateFromFile(file);
+            //    solution = solution.AddMetadataReference(projectId, metaDataReference);
+            //}
 
             int count = 0;
             foreach (var source in sources)

@@ -34,9 +34,7 @@ namespace CodeAnalyzer.Utilities
             return false;
         }
 
-        public static bool IsLinqIEnumerableWithPredicate(
-    IMethodSymbol methodSymbol,
-    string name)
+        public static bool IsLinqIEnumerableWithPredicate(IMethodSymbol methodSymbol, string name)
         {
             if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
                 return false;
@@ -53,8 +51,11 @@ namespace CodeAnalyzer.Utilities
             {
                 ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
 
-                return parameters[0].Type.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T
-                    && IsPredicateFunc(parameters[1].Type, methodSymbol.TypeArguments[0]);
+                if (parameters.Length > 1)
+                {
+                    return parameters[0].Type.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T
+                        && IsPredicateFunc(parameters[1].Type, methodSymbol.TypeArguments[0]);
+                }
             }
 
             return false;
