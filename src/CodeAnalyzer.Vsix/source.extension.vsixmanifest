@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="CodeAnalyzer.Vsix.b71a9a72-859a-46f2-ac1a-eadb5887c8ae" Version="1.0" Language="en-US" Publisher="Kristian Thaulow" />
-        <DisplayName>CodeAnalyzer.Vsix</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Identity Id="CodeAnalyzer.Vsix.b71a9a72-859a-46f2-ac1a-eadb5887c8ae" Version="0.14" Language="en-US" Publisher="Kristian Thaulow" />
+        <DisplayName>CodeAnalyzer</DisplayName>
+        <Description xml:space="preserve">Code analyzer for common bugs in C#</Description>
+        <MoreInfo>https://github.com/KThaulow/CodeAnalyzer</MoreInfo>
+        <License>Licence.txt</License>
+        <Tags>CodeAnalyzer</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 16.0)" />
